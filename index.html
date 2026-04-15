@@ -158,7 +158,7 @@ button:active {transform:translateY(1px);box-shadow:inset 0 0 10px #000,0 0 6px 
 <div id="saveLoadUI">
   <button onclick="exportJSON()">Export</button>
 
-  <input id="fileInput" type="file" hidden onchange="handleImport(event)">
+  <input id="fileInput" type="file" accept=".json,application/json" hidden onchange="handleImport(event)">
   <button onclick="fileInput.click()">Import</button>
 </div>
 
