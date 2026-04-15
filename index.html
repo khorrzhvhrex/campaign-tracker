@@ -545,6 +545,8 @@ renderLog();
 
  renderUnits();
  renderLog();
+
+saveToLocal();
  
  function updateTicks(side){
   const score = state.armies[side].score;
@@ -801,6 +803,28 @@ function importUnits(side){
   fileInput.click();
 }
 
+function saveToLocal(){
+  localStorage.setItem("hotv_campaign", JSON.stringify(state));
+}
+
+function loadFromLocal(){
+  const data = localStorage.getItem("hotv_campaign");
+  if(!data) return;
+
+  try{
+    state = JSON.parse(data);
+    updateUI();
+  } catch(e){
+    console.warn("Failed to load local save");
+  }
+}
+
+function clearLocal(){
+  localStorage.removeItem("hotv_campaign");
+  location.reload();
+}
+
+loadFromLocal();
 updateUI();
 </script>
 
