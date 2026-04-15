@@ -162,7 +162,10 @@ button:active {transform:translateY(1px);box-shadow:inset 0 0 10px #000,0 0 6px 
 
 </div>
 
-<h2 id="battleLogTitle" title="Show/Hide" onclick="toggleLog()">▸ Battle Log</h2>
+<h2 id="battleLogTitle" title="Show/Hide" onclick="toggleLog()">
+  <span id="logArrow">▸</span> Battle Log
+</h2>
+
 <div id="log" class="log hidden"></div>
 
 <div id="saveLoadUI">
@@ -696,14 +699,14 @@ function renderLog(){
 
 function toggleLog(){
   const logEl = document.getElementById("log");
-  const title = document.getElementById("battleLogTitle");
+  const arrow = document.getElementById("logArrow");
 
   logEl.classList.toggle("hidden");
 
   if(logEl.classList.contains("hidden")){
-    title.innerHTML = "▸ Battle Log";
+    arrow.textContent = "▸";
   } else {
-    title.innerHTML = "▾ Battle Log";
+    arrow.textContent = "▾";
   }
 }
 
