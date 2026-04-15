@@ -11,6 +11,7 @@
 h1, h2, h3, h4, p {margin:0;}
 h1, h2 {font-family: "Orbitron", sans-serif;}
 input, textarea {background: #111; color: #eee; border: 1px solid #444;}
+input[type="color"] {background:#111; border:1px solid #444; height:30px; width:60px; cursor:pointer;}
 html, body { font-family: "Rajdhani"; background:#111; color:#eee; padding:20px; }
 body {text-align:center; font-family: "Rajdhani", sans-serif;}
 #campaignTitle, #nameA, #nameB, #battleLogTitle {display:inline-block;text-align:center;cursor:pointer;transition:all 0.3s ease;color:#eee;text-shadow:0 0 3px rgba(150,0,0,0.3),0 0 8px rgba(150,0,0,0.15);}
@@ -99,6 +100,10 @@ button:active {transform:translateY(1px);box-shadow:inset 0 0 10px #000,0 0 6px 
 <div class="army">
   <h2 id="nameA" style="text-align:center; cursor:pointer;" title="Rename Army?" onclick="renameArmy('A')"></h2>
 
+<div class="center-buttons">
+  <input type="color" id="colorA" onchange="setArmyColor('A', this.value)">
+</div>
+
 <div class="bar" style="position:relative;">
   <div id="barA" style="background:red;height:100%;width:0%"></div>
 
@@ -133,6 +138,10 @@ button:active {transform:translateY(1px);box-shadow:inset 0 0 10px #000,0 0 6px 
 <!-- ARMY B -->
 <div class="army">
   <h2 id="nameB" style="text-align:center; cursor:pointer;" title="Rename Army?" onclick="renameArmy('B')"></h2>
+
+<div class="center-buttons">
+  <input type="color" id="colorB" onchange="setArmyColor('B', this.value)">
+</div>
 
 <div class="bar" style="position:relative;">
   <div id="barB" style="background:blue;height:100%;width:0%"></div>
@@ -258,10 +267,10 @@ let editingUnitId = null;
 let state={
  battleCount:0,
  battleHistory:[],
- armies:{
-  A:{name:"The Dead Kings",score:0,units:[]},
-  B:{name:"Velithar Ot'Ulthwe",score:0,units:[]}
- },
+armies:{
+  A:{name:"The Dead Kings",score:0,units:[],color:"#ff0000"},
+  B:{name:"Velithar Ot'Ulthwe",score:0,units:[],color:"#0000ff"}
+},
  missions:[],
  campaignName: "The Heart of the Void",
 };
@@ -273,6 +282,11 @@ function renameCampaign(){
   document.getElementById("renameInput").value = state.campaignName;
 
   document.getElementById("renameModal").style.display = "flex";
+}
+
+function setArmyColor(side, color){
+  state.armies[side].color = color;
+  updateUI();
 }
 
 function editMission(id){
@@ -521,6 +535,12 @@ function updateUI(){
 
 barA.style.width = (state.armies.A.score/6*100) + "%";
 barB.style.width = (state.armies.B.score/6*100) + "%";
+
+document.getElementById("colorA").value = state.armies.A.color || "#ff0000";
+document.getElementById("colorB").value = state.armies.B.color || "#0000ff";
+
+barA.style.background = state.armies.A.color || "#ff0000";
+barB.style.background = state.armies.B.color || "#0000ff";
 
 // ✅ LARGE BAR PROGRESSION (center expansion)
 const leftFill = document.getElementById("leftFill");
