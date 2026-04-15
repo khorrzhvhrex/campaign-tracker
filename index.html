@@ -539,8 +539,8 @@ rightFill.style.boxShadow = shadow;
 const leftFill = document.getElementById("leftFill");
 const rightFill = document.getElementById("rightFill");
 
-let progress = state.battleCount / 3;   // 0 → 1
-let halfWidth = progress * 50;          // each side grows to 50%
+let progress = state.battleCount / 3;
+let halfWidth = progress * 50;
 
 // left side grows left from center
 leftFill.style.width = halfWidth + "%";
@@ -549,6 +549,24 @@ leftFill.style.left = (50 - halfWidth) + "%";
 // right side grows right from center
 rightFill.style.width = halfWidth + "%";
 rightFill.style.left = "50%";
+
+// ✅ bronze fill
+leftFill.style.background = "linear-gradient(145deg,#8a6a3a,#4f3a1f)";
+rightFill.style.background = "linear-gradient(145deg,#8a6a3a,#4f3a1f)";
+
+// ✅ glow (NOW progress exists)
+let glowStrength = Math.min(progress, 1);
+
+let glow1 = 10 + glowStrength * 40;
+let glow2 = 20 + glowStrength * 80;
+
+let shadow = `
+  0 0 ${glow1}px rgba(255,160,80,0.35),
+  0 0 ${glow2}px rgba(255,120,40,0.25)
+`;
+
+leftFill.style.boxShadow = shadow;
+rightFill.style.boxShadow = shadow;
 
 renderUnits();
 renderLog();
