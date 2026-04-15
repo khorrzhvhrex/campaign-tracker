@@ -5,12 +5,24 @@
 <meta name="color-scheme" content="dark">
 <title>The Heart of the Void</title>
 <style>
-:root {color-scheme: dark;}
+:root {color-scheme: dark;   --space-xs: 5px; --space-sm: 10px; --space-md: 20px; --space-lg: 30px; --space-xl: 45px;}
+h1, h2, h3, h4, p {margin:0;}
 input, textarea {background: #111; color: #eee; border: 1px solid #444;}
 html, body { font-family: Arial; background:#111; color:#eee; padding:20px; }
 body {text-align:center;}
 #campaignTitle, #nameA, #nameB, #battleLogTitle {display:inline-block;text-align:center;cursor:pointer;transition:all 0.3s ease;color:#eee;text-shadow:0 0 3px rgba(150,0,0,0.3),0 0 8px rgba(150,0,0,0.15);}
 #campaignTitle:hover, #nameA:hover, #nameB:hover, #battleLogTitle:hover {color:#fff;text-shadow:0 0 8px rgba(150,0,0,0.9),0 0 20px rgba(150,0,0,0.7),0 0 40px rgba(150,0,0,0.5),0 0 70px rgba(150,0,0,0.3),0 0 110px rgba(150,0,0,0.15);transform:scale(1.02);}
+#campaignTitle {margin-bottom: var(--space-md);}
+.army {padding: var(--space-sm);}
+.army h2 {margin-bottom: var(--space-sm);}
+.bar {margin: var(--space-sm) 0;}
+.center-buttons {margin: var(--space-sm) 0;}
+table {margin-top: var(--space-sm);}
+#battleLogTitle {margin: var(--space-lg) 0 var(--space-sm) 0;}
+#battleLogTitle + .center-buttons {margin-bottom: var(--space-sm);}
+#log {margin-top: var(--space-sm);}
+.modal-content > * {margin-bottom: var(--space-sm);}
+.modal-content > *:last-child {margin-bottom: 0;}
 .container { display:flex; gap:10px; }
 .army { width:50%; border:1px solid #444; padding:10px; }
 .center-buttons { text-align:center; }
