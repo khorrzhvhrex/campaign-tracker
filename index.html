@@ -34,7 +34,8 @@ table { width:100%; border-collapse:collapse; margin-top:10px; }
 td,th { border:1px solid #444; padding:4px; text-align:center; }
 tr:hover {background: rgba(255,255,255,0.05);}
 .hidden { display:none; }
-.log { max-height:200px; overflow:auto; border:1px solid #444; padding:5px; }
+.log {max-height:0;opacity:0;overflow:hidden;border:1px solid #444;padding:0 5px;transition:max-height 0.3s ease,opacity 0.2s ease;}
+.log.open {max-height:500px;opacity:1;padding:5px;}
 .modal { position:fixed; inset:0; background:rgba(0,0,0,.8); display:none; justify-content:center; align-items:center; }
 .modal-content { background:#222; padding:20px; width:600px; max-height:80vh; overflow:auto; }
 .modal-columns {display: flex; gap: 40px;}
@@ -67,6 +68,7 @@ button:active {transform:translateY(1px);box-shadow:inset 0 0 10px #000,0 0 6px 
 .unit-grid input {margin:auto;}
 .unit-grid div:nth-child(6n+4), .unit-grid div:nth-child(6n+5), .unit-grid div:nth-child(6n+6) {background:rgba(255,255,255,0.02);}
 .unit-grid input:hover {box-shadow:0 0 4px rgba(150,0,0,0.6);}
+#log div {text-shadow:0 0 6px rgba(150,0,0,0.3);}
 #saveLoadUI {position: fixed; top: 15px; right: 20px; display: flex; gap: 8px; z-index: 1000;}
 #saveLoadUI button {padding: 6px 10px; font-size: 12px;}
 #saveLoadUI {background: rgba(0,0,0,0.6); padding: 6px 10px; border-radius: 8px;}
@@ -166,7 +168,7 @@ button:active {transform:translateY(1px);box-shadow:inset 0 0 10px #000,0 0 6px 
   <span id="logArrow">▸</span> Battle Log
 </h2>
 
-<div id="log" class="log hidden"></div>
+<div id="log" class="log"></div>
 
 <div id="saveLoadUI">
   <button onclick="exportJSON()">Export</button>
@@ -683,6 +685,15 @@ function saveMission(){
 function renderLog(){
   const logEl = document.getElementById("log");
 
+  if(state.missions.length === 0){
+    logEl.innerHTML = `
+      <div style="text-align:center;opacity:0.6;font-style:italic;padding:10px;">
+        TRANSMISSION INCOMING...
+      </div>
+    `;
+    return;
+  }
+
   logEl.innerHTML = state.missions.map(m=>{
     const winnerName = m.winner ? state.armies[m.winner].name : "Unknown";
 
@@ -692,7 +703,7 @@ function renderLog(){
       <br><strong>Victor:</strong> ${winnerName}
       <br><em>${m.narrative || ""}</em>
       <br><button onclick="editMission(${m.id})">Edit</button>
-	  <br><button onclick="deleteMission(${m.id})">Delete</button>
+      <br><button onclick="deleteMission(${m.id})">Delete</button>
     </div>`;
   }).join("");
 }
@@ -701,12 +712,12 @@ function toggleLog(){
   const logEl = document.getElementById("log");
   const arrow = document.getElementById("logArrow");
 
-  logEl.classList.toggle("hidden");
+  logEl.classList.toggle("open");
 
-  if(logEl.classList.contains("hidden")){
-    arrow.textContent = "▸";
-  } else {
+  if(logEl.classList.contains("open")){
     arrow.textContent = "▾";
+  } else {
+    arrow.textContent = "▸";
   }
 }
 
