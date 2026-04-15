@@ -283,42 +283,21 @@ function editMission(id){
   document.getElementById("missionScore").value = mission.score;
   document.getElementById("missionNarrative").value = mission.narrative;
 
-  // rebuild checkboxes with saved values
-  const container = document.getElementById("checkboxes");
+buildCheckboxes();
+	const checkboxes = document.querySelectorAll("#checkboxes input");
 
-  let html = "";
+checkboxes.forEach(input => {
+  let [side, id] = input.value.split("-");
+  id = Number(id);
 
-  ["A","B"].forEach(side=>{
-    html += `<h4>${state.armies[side].name}</h4>`;
-    html += `<div class="modal-columns">`;
+  if(input.dataset.type === "survived" && mission.survivors?.[side]?.includes(id)){
+    input.checked = true;
+  }
 
-    // Survived
-    html += `<div><strong>Survived</strong><br>`;
-    state.armies[side].units.forEach(u=>{
-      const checked = mission.survivors?.[side]?.includes(u.id) ? "checked" : "";
-      html += `<label>
-        <input type="checkbox" data-type="survived" value="${side}-${u.id}" ${checked}>
-        ${u.name || "Unnamed Unit"}
-      </label><br>`;
-    });
-    html += `</div>`;
-
-    // MFG
-    html += `<div><strong>MFG</strong><br>`;
-    state.armies[side].units.forEach(u=>{
-      const checked = mission.mfg?.[side]?.includes(u.id) ? "checked" : "";
-      html += `<label>
-        <input type="checkbox" data-type="mfg" value="${side}-${u.id}" ${checked}>
-        ${u.name || "Unnamed Unit"}
-      </label><br>`;
-    });
-    html += `</div>`;
-
-    html += `</div><br>`;
-  });
-
-  container.innerHTML = html;
-}
+  if(input.dataset.type === "mfg" && mission.mfg?.[side]?.includes(id)){
+    input.checked = true;
+  }
+});
 
 function deleteMission(id){
   missionToDeleteId = id;
@@ -626,7 +605,7 @@ function openModal(winner){
   missionScore.value="";
   missionNarrative.value="";
 
-  buildCheckboxes(null);
+  buildCheckboxes();
 }
 
 function getUnitStats(unitId, side){
