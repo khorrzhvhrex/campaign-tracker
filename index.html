@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="color-scheme" content="dark">
+<title>The Heart of the Void</title>
+<style>
+:root {color-scheme: dark;}
+input, textarea {background: #111; color: #eee; border: 1px solid #444;}
+html, body { font-family: Arial; background:#111; color:#eee; padding:20px; }
+#campaignTitle, #nameA, #nameB {cursor:pointer;transition:all 0.3s ease;color:#eee;text-shadow:0 0 3px rgba(150,0,0,0.3),0 0 8px rgba(150,0,0,0.15);}
+#campaignTitle:hover, #nameA:hover, #nameB:hover {color:#fff;text-shadow:0 0 8px rgba(150,0,0,0.9),0 0 20px rgba(150,0,0,0.7),0 0 40px rgba(150,0,0,0.5),0 0 70px rgba(150,0,0,0.3),0 0 110px rgba(150,0,0,0.15);transform:scale(1.02);}
+.container { display:flex; gap:10px; }
+.army { width:50%; border:1px solid #444; padding:10px; }
+.center-buttons { text-align:center; }
+.bar { height:20px; background:#333; margin:10px 0; position:relative; overflow:hidden; }
+.large-bar { height:30px; position:relative; }
+.large-fill { position:absolute; height:100%; width:0%; }
+.center { position:absolute; left:50%; width:2px; background:#fff; top:0; bottom:0; }
+table { width:100%; border-collapse:collapse; margin-top:10px; }
+td,th { border:1px solid #444; padding:4px; text-align:center; }
+tr:hover {background: rgba(255,255,255,0.05);}
+.hidden { display:none; }
+.log { max-height:200px; overflow:auto; border:1px solid #444; padding:5px; }
+.modal { position:fixed; inset:0; background:rgba(0,0,0,.8); display:none; justify-content:center; align-items:center; }
+.modal-content { background:#222; padding:20px; width:600px; max-height:80vh; overflow:auto; }
+.modal-columns {display: flex; gap: 40px;}
+.modal-columns > div {text-align: left;}
+.modal-columns span {display: block; flex: 1;}
+.modal-columns > div {width: 50%;}
+.modal-columns label {line-height: 1.2;}
+.modal-columns label {display: flex; align-items: flex-start; gap: 8px; padding: 4px 0; cursor: pointer;justify-content: flex-start;}
+.modal-columns label:hover {background: rgba(255,255,255,0.05); border-radius: 4px;}
+.modal-columns strong {display: block; margin-bottom: 6px; text-align: left; color: #aaa;}
+.modal-columns > div {background: rgba(255,255,255,0.03); padding: 8px; border: 1px solid #333; border-radius: 4px;}
+.modal-columns input[type="checkbox"] {margin: 3px 0 0 0; flex-shrink: 0;}
+.modal-content {border: 1px solid #444; box-shadow: 0 0 12px rgba(0,0,0,0.9), 0 0 8px rgba(150,0,0,0.3);}
+.modal-content h4 {margin-top: 20px; border-bottom: 1px solid #333; padding-bottom: 4px;}
+input, textarea { width:100%; margin-bottom:10px; }
+h2:hover {color: #ccc;}
+.tick {position: absolute; top: -2px; transform: translateX(-50%); font-size: 14px; color: #fff; pointer-events: none;}
+button {background:linear-gradient(145deg,#1a1a1a,#0d0d0d);color:#ccc;border:1px solid #444;padding:6px 12px;font-size:13px;cursor:pointer;border-radius:4px;
+ box-shadow:inset 0 0 4px #000,0 0 6px rgba(0,0,0,0.9);transition:all 0.2s ease;}
+button:hover {color:#fff;border-color:#aaa;box-shadow:inset 0 0 6px #000,0 0 8px rgba(150,0,0,0.6),0 0 18px rgba(150,0,0,0.4),0 0 30px rgba(150,0,0,0.2);}
+button:active {transform:translateY(1px);box-shadow:inset 0 0 10px #000,0 0 6px rgba(150,0,0,0.5);}
+.unit-grid {display: grid; grid-template-columns: 1fr 80px 80px; gap: 6px; align-items: center; margin-bottom: 15px;}
+.unit-grid .header {font-weight: bold; color: #aaa; border-bottom: 1px solid #333; padding-bottom: 4px;}
+.unit-name {text-align: left;}
+.unit-grid input {margin: auto;}
+.unit-grid {display:grid;grid-template-columns:1fr 80px 80px;gap:6px;align-items:center;margin-bottom:15px;border-top:1px solid #333;}
+.unit-grid > div {padding:4px 0;}
+.unit-grid .header {font-weight:bold;color:#ccc;text-transform:uppercase;font-size:12px;letter-spacing:1px;border-bottom:1px solid #333;padding-bottom:4px;}
+.unit-name {text-align:left;}
+.unit-grid input {margin:auto;}
+.unit-grid div:nth-child(6n+4), .unit-grid div:nth-child(6n+5), .unit-grid div:nth-child(6n+6) {background:rgba(255,255,255,0.02);}
+.unit-grid input:hover {box-shadow:0 0 4px rgba(150,0,0,0.6);}
+#saveLoadUI {position: fixed; top: 15px; right: 20px; display: flex; gap: 8px; z-index: 1000;}
+#saveLoadUI button {padding: 6px 10px; font-size: 12px;}
+#saveLoadUI {background: rgba(0,0,0,0.6); padding: 6px 10px; border-radius: 8px;}
+</style>
+</head>
+
+<body>
+
+<h1 id="campaignTitle"
+    style="text-align:center; cursor:pointer;"
+    title="Rename Campaign?"
+    onclick="renameCampaign()">
+  The Heart of the Void
+</h1>
+
+<div class="bar large-bar">
+  <div id="leftFill" class="large-fill"></div>
+  <div id="rightFill" class="large-fill"></div>
+  <div class="center"></div>
+</div>
+
+<div class="container">
+
+<!-- ARMY A -->
+<div class="army">
+  <h2 id="nameA" style="text-align:center; cursor:pointer;" title="Rename Army?" onclick="renameArmy('A')"></h2>
+
+<div class="bar" style="position:relative;">
+  <div id="barA" style="background:red;height:100%;width:0%"></div>
+
+  <div class="tick" id="tickA3" style="left:50%;">|</div>
+  <div class="tick" id="tickA5" style="left:83.33%;">|</div>
+  <div class="tick" id="tickA6" style="left:99%;">|</div>
+</div>
+
+  <div class="center-buttons">
+    <button onclick="openModal('A')">Record Victory</button>
+  </div>
+
+  <div class="center-buttons">
+    <button onclick="openUnitModal('A')">Add Unit</button>
+    <button onclick="importUnits('A')">Import Units</button>
+  </div>
+
+  <table id="unitsA">
+    <thead>
+      <tr>
+        <th>Name</th><th>Type</th><th>PL</th><th>Survived</th><th>MFG</th><th>Edit</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <div class="center-buttons">
+    <button id="exportA" onclick="exportArmy('A')"></button>
+  </div>
+</div>
+
+<!-- ARMY B -->
+<div class="army">
+  <h2 id="nameB" style="text-align:center; cursor:pointer;" title="Rename Army?" onclick="renameArmy('B')"></h2>
+
+<div class="bar" style="position:relative;">
+  <div id="barB" style="background:blue;height:100%;width:0%"></div>
+
+  <div class="tick" id="tickB3" style="left:50%;">|</div>
+  <div class="tick" id="tickB5" style="left:83.33%;">|</div>
+  <div class="tick" id="tickB6" style="left:99%;">|</div>
+</div>
+
+  <div class="center-buttons">
+    <button onclick="openModal('B')">Record Victory</button>
+  </div>
+
+  <div class="center-buttons">
+    <button onclick="openUnitModal('B')">Add Unit</button>
+    <button onclick="importUnits('B')">Import Units</button>
+  </div>
+
+  <table id="unitsB">
+    <thead>
+      <tr>
+        <th>Name</th><th>Type</th><th>PL</th><th>Survived</th><th>MFG</th><th>Edit</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <div class="center-buttons">
+    <button id="exportB" onclick="exportArmy('B')"></button>
+  </div>
+</div>
+
+</div>
+
+<h2 style="text-align:center;">Battle Log</h2>
+<div class="center-buttons">
+  <button onclick="toggleLog()">Show / Hide Log</button>
+</div>
+<div id="log" class="log hidden"></div>
+
+<div id="saveLoadUI">
+  <button onclick="exportJSON()">Export</button>
+
+  <input id="fileInput" type="file" hidden onchange="handleImport(event)">
+  <button onclick="fileInput.click()">Import</button>
+</div>
+
+<!-- RENAME MODAL -->
+<div class="modal" id="renameModal">
+  <div class="modal-content" style="text-align:center;">
+    <h3 id="renameTitle">Rename</h3>
+
+    <input id="renameInput" placeholder="Enter name">
+
+    <div style="margin-top:20px;">
+      <button onclick="confirmRename()">Save</button>
+      <button onclick="closeRenameModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- MISSION MODAL -->
+<div class="modal" id="modal">
+<div class="modal-content">
+<h3>Mission Log</h3>
+<input id="missionName" placeholder="Mission Name">
+<input id="missionScore" placeholder="Score">
+<textarea id="missionNarrative" placeholder="Narrative"></textarea>
+<div id="checkboxes"></div>
+<button onclick="saveMission()">Save</button>
+</div>
+</div>
+
+<!-- DELETE MISSION MODAL -->
+<div class="modal" id="deleteModal">
+  <div class="modal-content" style="text-align:center;">
+    <h3>Confirm Deletion</h3>
+    <p>Are you sure you want to delete this battle log entry?</p>
+
+    <div style="margin-top:20px;">
+      <button onclick="confirmDelete()">Yes</button>
+      <button onclick="closeDeleteModal()">No</button>
+    </div>
+  </div>
+</div>
+
+<!-- UNIT MODAL -->
+<div class="modal" id="unitModal">
+<div class="modal-content">
+<h3>Add Unit</h3>
+<input id="unitName" placeholder="Unit Name">
+<input id="unitType" placeholder="Unit Type">
+<input id="unitPL" placeholder="Power Level">
+<button onclick="saveUnit()">Save</button>
+<button id="deleteUnitBtn" onclick="deleteUnit()">Remove Unit</button>
+<button onclick="closeUnitModal()">Cancel</button>
+</div>
+</div>
+
+<!-- UNIT DELETE MODAL -->
+<div class="modal" id="deleteUnitModal">
+  <div class="modal-content" style="text-align:center;">
+    <h3>Remove Unit</h3>
+    <p>Are you sure you want to remove this unit?</p>
+
+    <div style="margin-top:20px;">
+      <button onclick="confirmUnitDelete()">Yes</button>
+      <button onclick="closeUnitDeleteModal()">No</button>
+    </div>
+  </div>
+</div>
+
+<script>
+
+let importTargetArmy = null;
+let editingMissionId = null;
+let pendingWinner=null;
+let unitSide=null;
+let missionToDeleteId = null;
+let renameTarget = null; // "campaign", "A", or "B"
+let editingUnitId = null;
+
+let state={
+ battleCount:0,
+ battleHistory:[],
+ armies:{
+  A:{name:"The Dead Kings",score:0,units:[]},
+  B:{name:"Velithar Ot'Ulthwe",score:0,units:[]}
+ },
+ missions:[],
+ campaignName: "The Heart of the Void",
+};
+
+function renameCampaign(){
+  renameTarget = "campaign";
+
+  document.getElementById("renameTitle").innerText = "Rename Campaign";
+  document.getElementById("renameInput").value = state.campaignName;
+
+  document.getElementById("renameModal").style.display = "flex";
+}
+
+function editMission(id){
+  const mission = state.missions.find(m => m.id === id);
+  if(!mission) return;
+
+  editingMissionId = id;
+  pendingWinner = mission.winner;
+
+  document.getElementById("modal").style.display = "flex";
+
+  document.getElementById("missionName").value = mission.name;
+  document.getElementById("missionScore").value = mission.score;
+  document.getElementById("missionNarrative").value = mission.narrative;
+
+  // rebuild checkboxes with saved values
+  const container = document.getElementById("checkboxes");
+
+  let html = "";
+
+  ["A","B"].forEach(side=>{
+    html += `<h4>${state.armies[side].name}</h4>`;
+    html += `<div class="modal-columns">`;
+
+    // Survived
+    html += `<div><strong>Survived</strong><br>`;
+    state.armies[side].units.forEach(u=>{
+      const checked = mission.survivors?.[side]?.includes(u.id) ? "checked" : "";
+      html += `<label>
+        <input type="checkbox" data-type="survived" value="${side}-${u.id}" ${checked}>
+        ${u.name || "Unnamed Unit"}
+      </label><br>`;
+    });
+    html += `</div>`;
+
+    // MFG
+    html += `<div><strong>MFG</strong><br>`;
+    state.armies[side].units.forEach(u=>{
+      const checked = mission.mfg?.[side]?.includes(u.id) ? "checked" : "";
+      html += `<label>
+        <input type="checkbox" data-type="mfg" value="${side}-${u.id}" ${checked}>
+        ${u.name || "Unnamed Unit"}
+      </label><br>`;
+    });
+    html += `</div>`;
+
+    html += `</div><br>`;
+  });
+
+  container.innerHTML = html;
+}
+
+function deleteMission(id){
+  missionToDeleteId = id;
+  document.getElementById("deleteModal").style.display = "flex";
+}
+function confirmDelete(){
+  if(!missionToDeleteId) return;
+
+  const mission = state.missions.find(m => m.id === missionToDeleteId);
+  if(!mission) return;
+
+  // remove mission
+  state.missions = state.missions.filter(m => m.id !== missionToDeleteId);
+
+  // remove matching battle history entry
+  const index = state.battleHistory.findIndex(b => b.winner === mission.winner);
+  if(index !== -1){
+    state.battleHistory.splice(index, 1);
+    state.battleCount--;
+  }
+
+  recalcScores();
+
+  missionToDeleteId = null;
+  closeDeleteModal();
+  updateUI();
+}
+
+function closeDeleteModal(){
+  missionToDeleteId = null;
+  document.getElementById("deleteModal").style.display = "none";
+}
+
+function recalcScores(){
+  state.armies.A.score = 0;
+  state.armies.B.score = 0;
+
+  state.battleHistory.forEach(b=>{
+    if(b.winner==="A"){
+      state.armies.A.score += 2;
+      state.armies.B.score += 1;
+    } else {
+      state.armies.B.score += 2;
+      state.armies.A.score += 1;
+    }
+  });
+}
+
+function buildCheckboxes(){
+  const container = document.getElementById("checkboxes");
+
+  let html = "";
+
+  ["A","B"].forEach(side=>{
+    html += `<h4>${state.armies[side].name}</h4>`;
+
+    html += `
+      <div class="unit-grid">
+        <div class="header">Unit</div>
+        <div class="header">Survived</div>
+        <div class="header">MFG</div>
+    `;
+
+    state.armies[side].units.forEach(u=>{
+      html += `
+        <div class="unit-name">${u.name || "Unnamed Unit"}</div>
+
+        <div>
+          <input type="checkbox" data-type="survived" value="${side}-${u.id}">
+        </div>
+
+        <div>
+          <input type="checkbox" data-type="mfg" value="${side}-${u.id}">
+        </div>
+      `;
+    });
+
+    html += `</div>`;
+  });
+
+  container.innerHTML = html;
+}
+
+function getFutureDate(){
+  const now = new Date();
+  const y = now.getFullYear() + 37000;
+  const m = String(now.getMonth()+1).padStart(2,'0');
+  const d = String(now.getDate()).padStart(2,'0');
+  return `${y}-${m}-${d}`;
+}
+
+function openUnitModal(side){
+  unitSide = side;
+  editingUnitId = null;
+
+  document.getElementById("unitModal").style.display = "flex";
+
+  unitName.value = "";
+  unitType.value = "";
+  unitPL.value = "";
+
+  document.querySelector("#unitModal h3").innerText = "Add Unit";
+
+  // ✅ Hide remove button
+  document.getElementById("deleteUnitBtn").style.display = "none";
+}
+
+function saveUnit(){
+  if(editingUnitId){
+    // 🔁 update existing unit
+    const unit = state.armies[unitSide].units.find(u => u.id === editingUnitId);
+    if(!unit) return;
+
+    unit.name = unitName.value;
+    unit.type = unitType.value;
+    unit.pl = unitPL.value;
+
+  } else {
+    // ➕ new unit
+    state.armies[unitSide].units.push({
+      id: Date.now(),
+      name: unitName.value,
+      type: unitType.value,
+      pl: unitPL.value
+    });
+  }
+
+  editingUnitId = null;
+
+  document.getElementById("unitModal").style.display = "none";
+  updateUI();
+}
+
+function editUnit(side, id){
+  const unit = state.armies[side].units.find(u => u.id === id);
+  if(!unit) return;
+
+  unitSide = side;
+  editingUnitId = id;
+
+  document.getElementById("unitModal").style.display = "flex";
+
+  unitName.value = unit.name;
+  unitType.value = unit.type;
+  unitPL.value = unit.pl;
+
+  document.querySelector("#unitModal h3").innerText = "Edit Unit";
+
+  // ✅ Show remove button
+  document.getElementById("deleteUnitBtn").style.display = "inline-block";
+}
+
+function deleteUnit(){
+  if(!editingUnitId) return;
+
+  document.getElementById("deleteUnitModal").style.display = "flex";
+}
+
+function confirmUnitDelete(){
+  if(!editingUnitId) return;
+
+  state.armies[unitSide].units =
+    state.armies[unitSide].units.filter(u => u.id !== editingUnitId);
+
+  editingUnitId = null;
+
+  closeUnitDeleteModal();
+  document.getElementById("unitModal").style.display = "none";
+  updateUI();
+}
+
+function closeUnitDeleteModal(){
+  document.getElementById("deleteUnitModal").style.display = "none";
+}
+
+function closeUnitModal(){
+  editingUnitId = null;
+  document.getElementById("unitModal").style.display = "none";
+}
+
+function renderUnits(){
+ ["A","B"].forEach(side=>{
+  let tbody=document.querySelector("#units"+side+" tbody");
+  tbody.innerHTML="";
+  state.armies[side].units.forEach(u=>{
+   const stats = getUnitStats(u.id, side);
+   tbody.innerHTML+=`
+   <tr>
+    <td>${u.name}</td>
+    <td>${u.type}</td>
+    <td>${u.pl}</td>
+    <td>${stats.survived}</td>
+    <td>${stats.mfg}</td>
+    <td><button onclick="editUnit('${side}',${u.id})">Edit</button></td>
+   </tr>`;
+  });
+ });
+}
+
+function removeUnit(side,id){
+ let army=state.armies[side];
+ army.units=army.units.filter(u=>u.id!==id);
+ updateUI();
+}
+
+function updateUI(){
+ nameA.innerText=state.armies.A.name;
+ nameB.innerText=state.armies.B.name;
+ 
+ document.getElementById("campaignTitle").innerText = state.campaignName;
+
+ exportA.innerText=`Export ${state.armies.A.name} Units`;
+ exportB.innerText=`Export ${state.armies.B.name} Units`;
+
+barA.style.width = (state.armies.A.score/6*100) + "%";
+barB.style.width = (state.armies.B.score/6*100) + "%";
+
+// ✅ LARGE BAR PROGRESSION (center expansion)
+const leftFill = document.getElementById("leftFill");
+const rightFill = document.getElementById("rightFill");
+
+let progress = state.battleCount / 3;   // 0 → 1
+let halfWidth = progress * 50;          // each side grows to 50%
+
+// left side grows left from center
+leftFill.style.width = halfWidth + "%";
+leftFill.style.left = (50 - halfWidth) + "%";
+
+// right side grows right from center
+rightFill.style.width = halfWidth + "%";
+rightFill.style.left = "50%";
+
+// ✅ COLOR BLENDING (who is winning)
+let total = state.armies.A.score + state.armies.B.score || 1;
+let ratio = state.armies.A.score / total;
+
+let r = Math.floor(255 * ratio);
+let b = Math.floor(255 * (1 - ratio));
+
+leftFill.style.background = `rgb(${r},0,${b})`;
+rightFill.style.background = `rgb(${r},0,${b})`;
+
+renderUnits();
+renderLog();
+
+ renderUnits();
+ renderLog();
+ 
+ function updateTicks(side){
+  const score = state.armies[side].score;
+
+  const thresholds = [
+    { val: 3, el: document.getElementById(`tick${side}3`) },
+    { val: 5, el: document.getElementById(`tick${side}5`) },
+    { val: 6, el: document.getElementById(`tick${side}6`) }
+  ];
+
+  thresholds.forEach(t=>{
+    if(!t.el) return;
+    t.el.innerText = score >= t.val ? "★" : "|";
+  });
+}
+
+// call for both armies
+updateTicks("A");
+updateTicks("B");
+}
+
+function renameArmy(side){
+  renameTarget = side;
+
+  document.getElementById("renameTitle").innerText = "Rename Army";
+  document.getElementById("renameInput").value = state.armies[side].name;
+
+  document.getElementById("renameModal").style.display = "flex";
+}
+
+function confirmRename(){
+  const input = document.getElementById("renameInput").value.trim();
+  if(!input) return;
+
+  if(renameTarget === "campaign"){
+    state.campaignName = input;
+  } else if(renameTarget === "A" || renameTarget === "B"){
+    state.armies[renameTarget].name = input;
+  }
+
+  renameTarget = null;
+  closeRenameModal();
+  updateUI();
+}
+
+function closeRenameModal(){
+  renameTarget = null;
+  document.getElementById("renameModal").style.display = "none";
+}
+
+function openModal(winner){
+  pendingWinner = winner; // ✅ store winner immediately
+  editingMissionId = null;
+
+  modal.style.display="flex";
+
+  missionName.value="";
+  missionScore.value="";
+  missionNarrative.value="";
+
+  buildCheckboxes(null);
+}
+
+function getUnitStats(unitId, side){
+  let survived = 0;
+  let mfg = 0;
+
+  state.missions.forEach(m => {
+    if(m.survivors?.[side]?.includes(unitId)) survived++;
+    if(m.mfg?.[side]?.includes(unitId)) mfg++;
+  });
+
+  return { survived, mfg };
+}
+
+function saveMission(){
+  const checkboxesEl = document.getElementById("checkboxes");
+  const missionNameEl = document.getElementById("missionName");
+  const missionScoreEl = document.getElementById("missionScore");
+  const missionNarrativeEl = document.getElementById("missionNarrative");
+
+  let inputs = [...checkboxesEl.querySelectorAll("input:checked")];
+
+  let survivors = { A: [], B: [] };
+  let mfg = { A: [], B: [] };
+
+  // ✅ Populate survivors and MFG from checked boxes
+  inputs.forEach(i=>{
+    let [side,id] = i.value.split("-");
+    id = Number(id);
+
+    if(i.dataset.type === "survived") survivors[side].push(id);
+    if(i.dataset.type === "mfg") mfg[side].push(id);
+  });
+
+  const mission = {
+    id: editingMissionId || Date.now(),
+    date: getFutureDate(),
+    name: missionNameEl.value || "Unnamed Mission",
+    score: missionScoreEl.value || "",
+    narrative: missionNarrativeEl.value || "",
+    winner: pendingWinner,
+    survivors,
+    mfg
+  };
+
+  if(editingMissionId){
+    // 🔁 Replace existing mission
+    const index = state.missions.findIndex(m => m.id === editingMissionId);
+    state.missions[index] = mission;
+  } else {
+    // ➕ Add new mission
+    state.missions.push(mission);
+
+    if(pendingWinner){
+      state.battleHistory.push({ winner: pendingWinner });
+      state.battleCount++;
+    }
+  }
+
+  // ✅ Recalculate scores (drives bars)
+  recalcScores();
+
+  // ✅ Reset state
+  editingMissionId = null;
+  pendingWinner = null;
+
+  // ✅ Close modal
+  document.getElementById("modal").style.display = "none";
+
+  // ✅ Refresh UI
+  updateUI();
+}
+
+function renderLog(){
+  const logEl = document.getElementById("log");
+
+  logEl.innerHTML = state.missions.map(m=>{
+    const winnerName = m.winner ? state.armies[m.winner].name : "Unknown";
+
+    return `
+    <div style="border-bottom:1px solid #444; padding:5px;">
+      <strong>${m.date}</strong> — ${m.name} (${m.score})
+      <br><strong>Victor:</strong> ${winnerName}
+      <br><em>${m.narrative || ""}</em>
+      <br><button onclick="editMission(${m.id})">Edit</button>
+	  <br><button onclick="deleteMission(${m.id})">Delete</button>
+    </div>`;
+  }).join("");
+}
+
+function toggleLog(){
+  const logEl = document.getElementById("log");
+  logEl.classList.toggle("hidden");
+}
+
+function exportArmy(side){
+  let blob = new Blob([JSON.stringify(state.armies[side].units)], {type:"application/json"});
+  let a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+
+  const timestamp = getTimestamp();
+  const safeName = state.armies[side].name.replace(/\s+/g, '_').toLowerCase();
+
+  a.download = `${timestamp}_${safeName}_units.json`;
+
+  a.click();
+}
+
+function exportJSON(){
+  let blob = new Blob([JSON.stringify(state)], {type:"application/json"});
+  let a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+
+  const timestamp = getTimestamp();
+  a.download = `${timestamp}_heartofthevoid_campaign.json`;
+
+  a.click();
+}
+
+function getTimestamp(){
+  const d = new Date();
+
+  const year = d.getFullYear();
+  const month = String(d.getMonth()+1).padStart(2,'0');
+  const day = String(d.getDate()).padStart(2,'0');
+
+  const hours = String(d.getHours()).padStart(2,'0');
+  const mins = String(d.getMinutes()).padStart(2,'0');
+  const secs = String(d.getSeconds()).padStart(2,'0');
+
+  return `${year}-${month}-${day}_${hours}-${mins}-${secs}`;
+}
+
+function handleImport(e){
+  let file = e.target.files[0];
+  if(!file) return;
+
+  let reader = new FileReader();
+
+  reader.onload = () => {
+    try {
+      let data = JSON.parse(reader.result);
+
+      // ✅ FULL CAMPAIGN IMPORT
+      if(data.armies && data.missions){
+        state = data;
+
+        ["A","B"].forEach(side=>{
+          state.armies[side].units.forEach(u=>{
+            u.survived = u.survived || 0;
+            u.mfg = u.mfg || 0;
+          });
+        });
+
+        importTargetArmy = null;
+        updateUI();
+        return;
+      }
+
+      // ✅ UNIT LIST IMPORT
+      if(Array.isArray(data)){
+        if(!importTargetArmy){
+          alert("Use 'Import Units' button for unit files");
+          return;
+        }
+
+        // Prevent ID collisions
+        data.forEach(u=>{
+          u.id = Date.now() + Math.random();
+          u.survived = u.survived || 0;
+          u.mfg = u.mfg || 0;
+        });
+
+        state.armies[importTargetArmy].units.push(...data);
+
+        importTargetArmy = null;
+        updateUI();
+        return;
+      }
+
+      alert("Invalid JSON format");
+
+    } catch(err){
+      alert("Failed to load JSON");
+    }
+  };
+
+  reader.readAsText(file);
+}
+
+function importUnits(side){
+  importTargetArmy = side;
+  fileInput.click();
+}
+
+updateUI();
+</script>
+
+</body>
+</html>
