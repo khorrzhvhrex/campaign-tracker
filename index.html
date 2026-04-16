@@ -208,7 +208,7 @@ button:active {transform:translateY(1px);box-shadow:inset 0 0 10px #000,0 0 6px 
 	<div class="modal-content">
 		<h3>Mission Log</h3>
 		<input id="missionName" placeholder="Mission Name">
-		<input id="missionScore" placeholder="Score">
+		<input id="missionScore">
 		<textarea id="missionNarrative" placeholder="Narrative"></textarea>
 	<div id="checkboxes"></div>
 		<button onclick="saveMission()">Save</button>
@@ -539,6 +539,8 @@ barB.style.width = (state.armies.B.score/6*100) + "%";
 
 document.getElementById("colorA").value = state.armies.A.color || "#ff0000";
 document.getElementById("colorB").value = state.armies.B.color || "#0000ff";
+document.getElementById("missionScore").placeholder =
+  `Score ${state.armies.A.name}-${state.armies.B.name}`;
 
 barA.style.background = state.armies.A.color || "#ff0000";
 barB.style.background = state.armies.B.color || "#0000ff";
