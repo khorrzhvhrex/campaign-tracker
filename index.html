@@ -38,6 +38,7 @@ table { width:100%; border-collapse:collapse; margin-top:10px; }
 td,th { border:1px solid #444; padding:4px; text-align:center; }
 th[onclick] {cursor:pointer;}
 th[onclick]:hover {text-shadow:0 0 6px rgba(150,0,0,0.6);}
+th[onclick]::after {content: " ⓘ"; opacity: 0.5; font-size: 10px;}
 tr:hover {background: rgba(255,255,255,0.05);}
 .hidden { display:none; }
 .log {max-height:0;opacity:0;overflow:hidden;border:1px solid #444;padding:0 5px;transition:max-height 0.3s ease,opacity 0.2s ease;}
@@ -321,9 +322,11 @@ function openPOI(type){
     title.innerText = "Marked for Greatness – Rewards";
     content.innerHTML = `
       <p>Units should be Marked for Greatness only with significant narrative justification. 
-	  This justification should be agreed upon by both parties. In the event of a lackluster performance from all units in either army, 
-	  a random unit may be generated from all surviving units by assigning a number and rolling an appropriate DX. At the conclusion of the campaign,
-	  each unit that has been Marked for Greatness gains the HEART OF THE WAR keyword. Units with this keyword may re-roll any failed Out of Action test.</p>
+	  This justification should be agreed upon by both parties.</p>
+	  <p>In the event of a lackluster performance from all units in either army, 
+	  a random unit may be generated from all surviving units by assigning a number and rolling an appropriate DX.</p>
+	  <p>At the conclusion of the campaign, each unit that has been Marked for Greatness gains the HEART OF THE WAR keyword. 
+	  Units with this keyword may re-roll any failed Out of Action test.</p>
     `;
   }
 
