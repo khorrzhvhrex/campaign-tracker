@@ -303,7 +303,7 @@ armies:{
  campaignName: "The Heart of the Void - First Blood",
 };
 
-const CONFIG = {singleMFGPerUnit: true // 🔁 set to false for grand campaign};
+const CONFIG = {singleMFGPerUnit: true}; // 🔁 set to false for grand campaign};
 	
 function openPOI(type){
   const modal = document.getElementById("poiModal");
@@ -469,7 +469,9 @@ function buildCheckboxes(){
 	  const hasMFG = CONFIG.singleMFGPerUnit && stats.mfg > 0;
 		
       html += `
-        <div class="unit-name">${u.name || "Unnamed Unit"}</div>
+        <div class="unit-name" style="${hasMFG ? "opacity:0.4;" : ""}">
+  		  ${u.name || "Unnamed Unit"}
+		</div>
 
         <div>
           <input type="checkbox" data-type="survived" value="${side}-${u.id}">
