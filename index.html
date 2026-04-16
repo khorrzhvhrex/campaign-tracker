@@ -734,6 +734,19 @@ function updateUI(){
 barA.style.width = (state.armies.A.score/6*100) + "%";
 barB.style.width = (state.armies.B.score/6*100) + "%";
 
+const colorA = state.armies.A.color || "#ff0000";
+const colorB = state.armies.B.color || "#0000ff";
+
+const progressA = state.armies.A.score / 6;
+const progressB = state.armies.B.score / 6;
+
+// glow intensity scales with progress
+const glowA = 4 + progressA * 12;
+const glowB = 4 + progressB * 12;
+
+barA.style.boxShadow = `inset 0 0 6px ${colorA}55, 0 0 ${glowA}px ${colorA}88`;
+barB.style.boxShadow = `inset 0 0 6px ${colorB}55, 0 0 ${glowB}px ${colorB}88`;
+
 document.getElementById("colorA").value = state.armies.A.color || "#ff0000";
 document.getElementById("colorB").value = state.armies.B.color || "#0000ff";
 document.getElementById("missionScore").placeholder =
