@@ -174,8 +174,8 @@ button:active {transform:translateY(1px);box-shadow:inset 0 0 10px #000,0 0 6px 
         <th>Name</th>
 		  <th>Type</th>
 		  <th>PL</th>
-		  <th onclick="openPOI('survived')" style="cursor:pointer;" title="View POI Rules">Survived</th>
-		  <th onclick="openPOI('mfg')" style="cursor:pointer;" title="View POI Rules">MFG</th>
+		  <th onclick="openPOI('survived')" style="cursor:pointer;" title="Survival Bonuses">Survived</th>
+		  <th onclick="openPOI('mfg')" style="cursor:pointer;" title="Marked for Greatness Bonus">MFG</th>
 		  <th>Edit</th>
       </tr>
     </thead>
@@ -325,6 +325,7 @@ function openPOI(type){
 	  This justification should be agreed upon by both parties.</p>
 	  <p>In the event of a lackluster performance from all units in either army, 
 	  a random unit may be generated from all surviving units by assigning a number and rolling an appropriate DX.</p>
+	  <p>A unit should be Marked for Greatness no more than once.</p>
 	  <p>At the conclusion of the campaign, each unit that has been Marked for Greatness gains the HEART OF THE WAR keyword. 
 	  Units with this keyword may re-roll any failed Out of Action test.</p>
     `;
