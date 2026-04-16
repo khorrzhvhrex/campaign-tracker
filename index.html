@@ -183,10 +183,10 @@ button:active {transform:translateY(1px);box-shadow:inset 0 0 10px #000,0 0 6px 
 <div id="log" class="log"></div>
 
 <div id="saveLoadUI">
-  <button onclick="exportJSON()">Export</button>
+  <button onclick="exportJSON()">Transmit Campaign Data</button>
 
   <input id="fileInput" type="file" accept=".json,application/json" hidden onchange="handleImport(event)">
-  <button onclick="fileInput.click()">Import</button>
+  <button onclick="fileInput.click()">Receive Campaign Data</button>
 </div>
 
 <!-- RENAME MODAL -->
@@ -205,14 +205,15 @@ button:active {transform:translateY(1px);box-shadow:inset 0 0 10px #000,0 0 6px 
 
 <!-- MISSION MODAL -->
 <div class="modal" id="modal">
-<div class="modal-content">
-<h3>Mission Log</h3>
-<input id="missionName" placeholder="Mission Name">
-<input id="missionScore" placeholder="Score">
-<textarea id="missionNarrative" placeholder="Narrative"></textarea>
-<div id="checkboxes"></div>
-<button onclick="saveMission()">Save</button>
-</div>
+	<div class="modal-content">
+		<h3>Mission Log</h3>
+		<input id="missionName" placeholder="Mission Name">
+		<input id="missionScore" placeholder="Score">
+		<textarea id="missionNarrative" placeholder="Narrative"></textarea>
+	<div id="checkboxes"></div>
+		<button onclick="saveMission()">Save</button>
+		<button onclick="closeMissionModal()">Cancel</button>
+	</div>
 </div>
 
 <!-- DELETE MISSION MODAL -->
@@ -712,6 +713,17 @@ function saveMission(){
 
   // ✅ Refresh UI
   updateUI();
+}
+
+function closeMissionModal(){
+  editingMissionId = null;
+  pendingWinner = null;
+
+  document.getElementById("missionName").value = "";
+  document.getElementById("missionScore").value = "";
+  document.getElementById("missionNarrative").value = "";
+
+  document.getElementById("modal").style.display = "none";
 }
 
 function renderLog(){
