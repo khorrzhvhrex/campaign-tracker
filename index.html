@@ -907,9 +907,6 @@ function saveMission(){
   let survivors = { A: [], B: [] };
   let mfg = { A: [], B: [] };
 
-  // ❗ Enforce only 1 MFG per mission
-  const totalMFG = mfg.A.length + mfg.B.length;
-
   if(totalMFG > 1){
     alert("Only 1 unit may be MFG");
     return;
@@ -923,6 +920,9 @@ function saveMission(){
     if(i.dataset.type === "survived") survivors[side].push(id);
     if(i.dataset.type === "mfg") mfg[side].push(id);
   });
+
+  // ❗ Enforce only 1 MFG per mission
+  const totalMFG = mfg.A.length + mfg.B.length;
 
   const mission = {
     id: editingMissionId || Date.now(),
