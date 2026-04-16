@@ -97,7 +97,7 @@ button:active {transform:translateY(1px);box-shadow:inset 0 0 10px #000,0 0 6px 
 <div class="container">
 
 <!-- ARMY A -->
-<div class="army">
+<div id="armyA" class="army">
   <h2 id="nameA" style="text-align:center; cursor:pointer;" title="Rename Army?" onclick="renameArmy('A')"></h2>
 
 <div class="center-buttons">
@@ -136,7 +136,7 @@ button:active {transform:translateY(1px);box-shadow:inset 0 0 10px #000,0 0 6px 
 </div>
 
 <!-- ARMY B -->
-<div class="army">
+<div id="armyB" class="army">
   <h2 id="nameB" style="text-align:center; cursor:pointer;" title="Rename Army?" onclick="renameArmy('B')"></h2>
 
 <div class="center-buttons">
@@ -288,6 +288,18 @@ function renameCampaign(){
 function setArmyColor(side, color){
   state.armies[side].color = color;
   updateUI();
+}
+
+function darkenColor(hex, factor = 0.85){
+  let r = parseInt(hex.substr(1,2),16);
+  let g = parseInt(hex.substr(3,2),16);
+  let b = parseInt(hex.substr(5,2),16);
+
+  r = Math.floor(r * (1 - factor));
+  g = Math.floor(g * (1 - factor));
+  b = Math.floor(b * (1 - factor));
+
+  return `rgb(${r},${g},${b})`;
 }
 
 function editMission(id){
@@ -544,6 +556,15 @@ document.getElementById("missionScore").placeholder =
 
 barA.style.background = state.armies.A.color || "#ff0000";
 barB.style.background = state.armies.B.color || "#0000ff";
+
+const armyAEl = document.getElementById("armyA");
+const armyBEl = document.getElementById("armyB");
+
+const colorA = state.armies.A.color || "#ff0000";
+const colorB = state.armies.B.color || "#0000ff";
+
+armyAEl.style.background = darkenColor(colorA, 0.9);
+armyBEl.style.background = darkenColor(colorB, 0.9);
 
 // ✅ LARGE BAR PROGRESSION (center expansion)
 const leftFill = document.getElementById("leftFill");
