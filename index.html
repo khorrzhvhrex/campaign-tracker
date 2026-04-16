@@ -289,6 +289,11 @@ button:active {transform:translateY(1px);box-shadow:inset 0 0 10px #000,0 0 6px 
     <h3>Eligible MFG Targets</h3>
     <div id="mfgList"></div>
 
+	<div style="text-align:center;margin-top:15px;">
+	  <button onclick="applyMFG()">Apply MFG</button>
+	  <button onclick="closeMFGModal()">Cancel</button>
+	</div>
+
     <div style="text-align:center;margin-top:15px;">
       <button onclick="closeMFGModal()">Close</button>
     </div>
@@ -317,6 +322,15 @@ armies:{
 };
 
 const CONFIG = {singleMFGPerUnit: true}; // 🔁 set to false for grand campaign};
+
+document.addEventListener("change", function(e){
+  if(e.target.closest("#mfgList") && e.target.type === "checkbox"){
+    const checkboxes = document.querySelectorAll("#mfgList input[type='checkbox']");
+    checkboxes.forEach(cb=>{
+      if(cb !== e.target) cb.checked = false;
+    });
+  }
+});
 	
 function openPOI(type){
   const modal = document.getElementById("poiModal");
@@ -636,7 +650,10 @@ function removeUnit(side,id){
  updateUI();
 }
 
+let activeMFGSide = null;
+
 function openMFGTargets(side){
+  activeMFGSide = side;
   const list = document.getElementById("mfgList");
 
   let html = "";
@@ -645,7 +662,12 @@ function openMFGTargets(side){
     const stats = getUnitStats(u.id, side);
 
     if(stats.mfg === 0){
-      html += `<div>${u.name}</div>`;
+      html += `
+        <label style="display:block;padding:4px 0;">
+          <input type="checkbox" data-id="${u.id}">
+          ${u.name}
+        </label>
+      `;
     }
   });
 
@@ -659,6 +681,43 @@ function openMFGTargets(side){
 
 function closeMFGModal(){
   document.getElementById("mfgModal").style.display = "none";
+}
+
+function applyMFG(){
+  const selected = document.querySelector("#mfgList input:checked");
+
+  if(!selected){
+    alert("Select a unit to Mark for Greatness");
+    return;
+  }
+
+  const unitId = Number(selected.dataset.id);
+  const side = activeMFGSide;
+
+  const unit = state.armies[side].units.find(u => u.id === unitId);
+  if(!unit) return;
+
+  // ✅ Create MFG-only mission entry
+  const entry = {
+    id: Date.now(),
+    date: getFutureDate(),
+    name: "Marked for Greatness",
+    score: "",
+    narrative: `${unit.name} Marked for Greatness using Heart of the Void points`,
+    winner: null,
+    survivors: { A: [], B: [] },
+    mfg: { A: [], B: [] }
+  };
+
+  entry.mfg[side].push(unitId);
+
+  state.missions.push(entry);
+
+  // no battleCount increment (important)
+  // no score change
+
+  closeMFGModal();
+  updateUI();
 }
 
 function updateUI(){
