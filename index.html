@@ -466,7 +466,19 @@ function buildCheckboxes(){
     state.armies[side].units.forEach(u=>{
 
 	  const stats = getUnitStats(u.id, side);
-	  const hasMFG = CONFIG.singleMFGPerUnit && stats.mfg > 0;
+
+	  // count MFG from OTHER missions only
+	  let otherMFG = 0;
+
+	  state.missions.forEach(m=>{
+	    if(editingMissionId && m.id === editingMissionId) return;
+
+	    if(m.mfg?.[side]?.includes(u.id)){
+	      otherMFG++;
+	    }
+	  });
+
+	  const hasMFG = CONFIG.singleMFGPerUnit && otherMFG > 0;
 		
       html += `
         <div class="unit-name" style="${hasMFG ? "opacity:0.4;" : ""}">
