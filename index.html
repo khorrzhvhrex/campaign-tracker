@@ -283,6 +283,18 @@ button:active {transform:translateY(1px);box-shadow:inset 0 0 10px #000,0 0 6px 
   </div>
 </div>
 
+<!-- EXTRA MFG MODAL -->
+<div id="mfgModal" class="modal">
+  <div class="modal-content">
+    <h3>Eligible MFG Targets</h3>
+    <div id="mfgList"></div>
+
+    <div style="text-align:center;margin-top:15px;">
+      <button onclick="closeMFGModal()">Close</button>
+    </div>
+  </div>
+</div>
+
 <script>
 
 let importTargetArmy = null;
@@ -624,6 +636,31 @@ function removeUnit(side,id){
  updateUI();
 }
 
+function openMFGTargets(side){
+  const list = document.getElementById("mfgList");
+
+  let html = "";
+
+  state.armies[side].units.forEach(u=>{
+    const stats = getUnitStats(u.id, side);
+
+    if(stats.mfg === 0){
+      html += `<div>${u.name}</div>`;
+    }
+  });
+
+  if(!html){
+    html = `<div style="opacity:0.6;">No eligible units</div>`;
+  }
+
+  list.innerHTML = html;
+  document.getElementById("mfgModal").style.display = "flex";
+}
+
+function closeMFGModal(){
+  document.getElementById("mfgModal").style.display = "none";
+}
+
 function updateUI(){
  nameA.innerText=state.armies.A.name;
  nameB.innerText=state.armies.B.name;
@@ -713,6 +750,15 @@ saveToLocal();
     const achieved = score >= t.val;
 
 	t.el.innerText = achieved ? "★" : "☠";
+
+	if(achieved){
+	  t.el.style.cursor = "pointer";
+	  t.el.onclick = () => openMFGTargets(side);
+	} else {
+	  t.el.style.cursor = "default";
+	  t.el.onclick = null;
+	}
+	  
 	t.el.style.fontSize = achieved ? "22px" : "18px";
 
 	// ✅ Tooltip text
@@ -789,6 +835,14 @@ function saveMission(){
 
   let survivors = { A: [], B: [] };
   let mfg = { A: [], B: [] };
+
+  // ❗ Enforce only 1 MFG per mission
+  const totalMFG = mfg.A.length + mfg.B.length;
+
+  if(totalMFG > 1){
+    alert("Only 1 unit may be MFG");
+    return;
+  }
 
   // ✅ Populate survivors and MFG from checked boxes
   inputs.forEach(i=>{
