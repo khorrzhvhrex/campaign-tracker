@@ -12,6 +12,7 @@ h1, h2, h3, h4, p {margin:0;}
 h1, h2 {font-family: "Orbitron", sans-serif;}
 input, textarea {background: #111; color: #eee; border: 1px solid #444;}
 input[type="color"] {background:#111; border:1px solid #444; height:30px; width:60px; cursor:pointer;}
+input[type="checkbox"]:disabled {opacity: 0.4; cursor: not-allowed;}
 html, body { font-family: "Rajdhani"; background:#111; color:#eee; padding:20px; }
 body {text-align:center; font-family: "Rajdhani", sans-serif;}
 #campaignTitle, #nameA, #nameB, #battleLogTitle {display:inline-block;text-align:center;cursor:pointer;transition:all 0.3s ease;color:#eee;text-shadow:0 0 3px rgba(150,0,0,0.3),0 0 8px rgba(150,0,0,0.15);}
@@ -299,9 +300,11 @@ armies:{
   B:{name:"Velithar Ot'Ulthwe",score:0,units:[],color:"#0000ff"}
 },
  missions:[],
- campaignName: "The Heart of the Void",
+ campaignName: "The Heart of the Void - First Blood",
 };
 
+const CONFIG = {singleMFGPerUnit: true // 🔁 set to false for grand campaign};
+	
 function openPOI(type){
   const modal = document.getElementById("poiModal");
   const title = document.getElementById("poiTitle");
@@ -461,6 +464,10 @@ function buildCheckboxes(){
     `;
 
     state.armies[side].units.forEach(u=>{
+
+	  const stats = getUnitStats(u.id, side);
+	  const hasMFG = CONFIG.singleMFGPerUnit && stats.mfg > 0;
+		
       html += `
         <div class="unit-name">${u.name || "Unnamed Unit"}</div>
 
@@ -468,10 +475,10 @@ function buildCheckboxes(){
           <input type="checkbox" data-type="survived" value="${side}-${u.id}">
         </div>
 
-        <div>
-          <input type="checkbox" data-type="mfg" value="${side}-${u.id}">
-        </div>
-      `;
+	   <div>
+   	 	 <input type="checkbox" data-type="mfg" value="${side}-${u.id}" ${hasMFG ? "disabled" : ""}>
+	   </div>
+		`;
     });
 
     html += `</div>`;
