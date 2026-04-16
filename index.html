@@ -915,7 +915,7 @@ function renderLog(){
     return;
   }
 
-  logEl.innerHTML = state.missions.map(m=>{
+  logEl.innerHTML = [...state.missions].reverse().map(m=>{
     const winnerName = m.winner ? state.armies[m.winner].name : "Unknown";
 
     return `
