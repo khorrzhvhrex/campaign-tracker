@@ -902,27 +902,27 @@ function saveMission(){
   const missionScoreEl = document.getElementById("missionScore");
   const missionNarrativeEl = document.getElementById("missionNarrative");
 
-  let inputs = [...checkboxesEl.querySelectorAll("input:checked")];
+let inputs = [...checkboxesEl.querySelectorAll("input:checked")];
 
-  let survivors = { A: [], B: [] };
-  let mfg = { A: [], B: [] };
+let survivors = { A: [], B: [] };
+let mfg = { A: [], B: [] };
 
-  if(totalMFG > 1){
-    alert("Only 1 unit may be MFG");
-    return;
-  }
+// ✅ Populate survivors and MFG
+inputs.forEach(i=>{
+  let [side,id] = i.value.split("-");
+  id = Number(id);
 
-  // ✅ Populate survivors and MFG from checked boxes
-  inputs.forEach(i=>{
-    let [side,id] = i.value.split("-");
-    id = Number(id);
+  if(i.dataset.type === "survived") survivors[side].push(id);
+  if(i.dataset.type === "mfg") mfg[side].push(id);
+});
 
-    if(i.dataset.type === "survived") survivors[side].push(id);
-    if(i.dataset.type === "mfg") mfg[side].push(id);
-  });
+// ❗ Enforce only 1 MFG per mission (NOW valid)
+const totalMFG = mfg.A.length + mfg.B.length;
 
-  // ❗ Enforce only 1 MFG per mission
-  const totalMFG = mfg.A.length + mfg.B.length;
+if(totalMFG > 1){
+  alert("Only 1 unit may be MFG");
+  return;
+}
 
   const mission = {
     id: editingMissionId || Date.now(),
@@ -990,8 +990,8 @@ function renderLog(){
     const winnerName = m.winner ? state.armies[m.winner].name : "Unknown";
 
     return `
-    <div style="margin-top:6px; display:flex; gap:6px; justify-content:flex-end;">
-      <strong>${m.date}</strong> — ${m.name} (${m.score})
+	<div style="border-bottom:1px solid #444; padding:5px;">
+	  <strong>${m.date}</strong> — ${m.name} (${m.score})
       <br><strong>Victor:</strong> ${winnerName}
       <br><em>${m.narrative || ""}</em>
       <div style="margin-top:6px; display:flex; gap:6px;">
