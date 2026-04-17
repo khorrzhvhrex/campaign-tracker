@@ -323,7 +323,7 @@ armies:{
  campaignName: "The Heart of the Void - First Blood",
 };
 
-const CONFIG = {singleMFGPerUnit: true}; // 🔁 set to false for grand campaign};
+const CONFIG = {singleMFGPerUnit: true};   mfgPerArmyMin: 1, mfgPerArmyMax: 1}; // 🔁 set to false for grand campaign, change to>}; mfgPerArmyMin: 1, mfgPerArmyMax: 2
 
 document.addEventListener("change", function(e){
   if(e.target.closest("#mfgList") && e.target.type === "checkbox"){
@@ -917,13 +917,20 @@ inputs.forEach(i=>{
 });
 
 // ❗ Enforce only 1 MFG per mission (NOW valid)
-const totalMFG = mfg.A.length + mfg.B.length;
+const min = CONFIG.mfgPerArmyMin;
+const max = CONFIG.mfgPerArmyMax;
 
-if(totalMFG > 1){
-  alert("Only 1 unit may be MFG");
+// ❗ Enforce per-army limits
+if(mfg.A.length < min || mfg.B.length < min){
+  alert(`Each army must Mark at least ${min} unit for Greatness`);
   return;
 }
 
+if(mfg.A.length > max || mfg.B.length > max){
+  alert(`Each army may only Mark up to ${max} unit(s) for Greatness`);
+  return;
+}
+	
   const mission = {
     id: editingMissionId || Date.now(),
     date: getFutureDate(),
