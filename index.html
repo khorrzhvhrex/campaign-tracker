@@ -83,6 +83,7 @@ button:active {transform:translateY(1px);box-shadow:inset 0 0 10px #000,0 0 6px 
 #saveLoadUI {background: rgba(0,0,0,0.6); padding: 6px 10px; border-radius: 8px;}
 #mfgList label {display:flex; align-items:center; gap:8px; padding:4px 0; cursor:pointer;}
 #mfgList input[type="checkbox"] {margin:0;}
+#notesLore, notesRanged, notesMelee, notesPsychic, notesAbilities {min-height:60px; overflow:hidden; resize:none;}
 @keyframes bronzePulse {0%   { filter: brightness(1); } 50%  { filter: brightness(1.25); } 100% { filter: brightness(1); }}
 </style>
 </head>
@@ -278,19 +279,19 @@ button:active {transform:translateY(1px);box-shadow:inset 0 0 10px #000,0 0 6px 
 
     <h3 id="notesTitle">Unit Notes</h3>
 
-    <textarea id="notesRanged" placeholder="Ranged Weapons"></textarea>
+    <textarea id="notesRanged" placeholder="Ranged Weapons" oninput="autoGrow(this)"></textarea>
 
-    <textarea id="notesMelee" placeholder="Melee Weapons"></textarea>
+    <textarea id="notesMelee" placeholder="Melee Weapons" oninput="autoGrow(this)"></textarea>
 
-    <textarea id="notesPsychic" placeholder="Psychic Powers"></textarea>
+    <textarea id="notesPsychic" placeholder="Psychic Powers" oninput="autoGrow(this)"></textarea>
 
     <textarea id="notesWarlord" placeholder="Warlord Trait"></textarea>
 
     <textarea id="notesRelic" placeholder="Relic"></textarea>
 
-    <textarea id="notesAbilities" placeholder="Abilities"></textarea>
+    <textarea id="notesAbilities" placeholder="Abilities" oninput="autoGrow(this)"></textarea>
 
-    <textarea id="notesLore" placeholder="Lore"></textarea>
+    <textarea id="notesLore" placeholder="Lore" oninput="autoGrow(this)"></textarea>
 
     <button onclick="saveNotes()">Save</button>
     <button onclick="closeNotesModal()">Cancel</button>
@@ -378,6 +379,11 @@ document.addEventListener("change", function(e){
     });
   }
 });
+
+function autoGrow(el){
+  el.style.height = "auto";
+  el.style.height = el.scrollHeight + "px";
+}
 	
 function openPOI(type){
   const modal = document.getElementById("poiModal");
@@ -858,13 +864,13 @@ function openNotes(side,id){
   notesTitle.innerText =
     `${unit.name} Notes`;
 
-  notesRanged.value = unit.notes.ranged || "";
-  notesMelee.value = unit.notes.melee || "";
-  notesPsychic.value = unit.notes.psychic || "";
+  notesRanged.value = unit.notes.ranged || ""; autoGrow(notesRanged);
+  notesMelee.value = unit.notes.melee || ""; autoGrow(notesMelee);
+  notesPsychic.value = unit.notes.psychic || ""; autoGrow(notesPsychic);
   notesWarlord.value = unit.notes.warlord || "";
   notesRelic.value = unit.notes.relic || "";
-  notesAbilities.value = unit.notes.abilities || "";
-  notesLore.value = unit.notes.lore || "";
+  notesAbilities.value = unit.notes.abilities || ""; autoGrow(notesAbilities);
+  notesLore.value = unit.notes.lore || ""; autoGrow(notesLore);
 
   notesModal.style.display="flex";
 }
