@@ -741,7 +741,7 @@ function renderUnits(){
     <td>
 	  <span onclick="openNotes('${side}',${u.id})"
 	        style="cursor:pointer; text-decoration:underline;">
-	    ${u.name}
+	    ${u.name}${hasUnitNotes(u) ? ' <span style="opacity:.65;font-size:12px;">📜</span>' : ''}
 	  </span>
 	</td>
     <td>${u.type}</td>
@@ -752,6 +752,14 @@ function renderUnits(){
    </tr>`;
   });
  });
+}
+
+function hasUnitNotes(unit){
+  if(!unit.notes) return false;
+
+  return Object.values(unit.notes).some(v =>
+    v && v.trim() !== ""
+  );
 }
 
 function removeUnit(side,id){
