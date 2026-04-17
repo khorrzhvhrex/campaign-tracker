@@ -826,25 +826,60 @@ function renderDatasheetRows(){
 
 function addModelRow(){
 
- let unit=
- state.armies[datasheetSide]
- .units.find(u=>u.id===datasheetUnitId);
+  let unit =
+   state.armies[datasheetSide]
+   .units.find(u=>u.id===datasheetUnitId);
 
- unit.datasheet.push({
-   model:"",
-   m:"",
-   ws:"",
-   bs:"",
-   s:"",
-   t:"",
-   w:"",
-   a:"",
-   ld:"",
-   sv:"",
-   inv:""
- });
+  // Capture current table values first
+  let rows = [
+    ...document.querySelectorAll(
+      "#datasheetTable tr"
+    )
+  ].slice(1);
 
- renderDatasheetRows();
+  let saved=[];
+
+  rows.forEach(r=>{
+
+    let inputs=[
+      ...r.querySelectorAll("input")
+    ].map(i=>i.value.trim());
+
+    saved.push({
+      model:inputs[0],
+      m:inputs[1],
+      ws:inputs[2],
+      bs:inputs[3],
+      s:inputs[4],
+      t:inputs[5],
+      w:inputs[6],
+      a:inputs[7],
+      ld:inputs[8],
+      sv:inputs[9],
+      inv:inputs[10]
+    });
+
+  });
+
+  // Preserve current edits
+  unit.datasheet = saved;
+
+  // Add new blank row
+  unit.datasheet.push({
+    model:"",
+    m:"",
+    ws:"",
+    bs:"",
+    s:"",
+    t:"",
+    w:"",
+    a:"",
+    ld:"",
+    sv:"",
+    inv:""
+  });
+
+  renderDatasheetRows();
 }
 
 function saveDatasheet(){
