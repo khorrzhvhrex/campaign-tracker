@@ -323,7 +323,10 @@ armies:{
  campaignName: "The Heart of the Void - First Blood",
 };
 
-const CONFIG = {singleMFGPerUnit: true};   mfgPerArmyMin: 1, mfgPerArmyMax: 1}; // 🔁 set to false for grand campaign, change to>}; mfgPerArmyMin: 1, mfgPerArmyMax: 2
+const CONFIG = {singleMFGPerUnit: true, mfgPerArmyMin: 1, mfgPerArmyMax: 1}; 
+// 🔁 For grand campaign:
+// mfgPerArmyMin: 1,
+// mfgPerArmyMax: 2
 
 document.addEventListener("change", function(e){
   if(e.target.closest("#mfgList") && e.target.type === "checkbox"){
