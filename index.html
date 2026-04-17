@@ -298,6 +298,22 @@ button:active {transform:translateY(1px);box-shadow:inset 0 0 10px #000,0 0 6px 
   </div>
 </div>
 
+<!-- DATASHEET MODAL -->
+<div class="modal" id="datasheetModal">
+<div class="modal-content">
+
+<h3 id="datasheetTitle">Datasheet</h3>
+
+<div id="datasheetTable"></div>
+
+<button onclick="addModelRow()">Add Model</button>
+
+<button onclick="saveDatasheet()">Save</button>
+<button onclick="closeDatasheetModal()">Cancel</button>
+
+</div>
+</div>
+
 <!-- UNIT DELETE MODAL -->
 <div class="modal" id="deleteUnitModal">
   <div class="modal-content" style="text-align:center;">
@@ -610,6 +626,21 @@ function saveUnit(){
 	    abilities:"",
 	    lore:""
 	  }
+	  datasheet: [
+		  {
+		    model:"",
+		    m:"",
+		    ws:"",
+		    bs:"",
+		    s:"",
+		    t:"",
+		    w:"",
+		    a:"",
+		    ld:"",
+		    sv:"",
+		    inv:""
+		  }
+		]
 	});
   }
 
@@ -617,6 +648,168 @@ function saveUnit(){
 
   document.getElementById("unitModal").style.display = "none";
   updateUI();
+}
+
+let datasheetSide=null;
+let datasheetUnitId=null;
+
+function openDatasheet(side,id){
+
+ datasheetSide=side;
+ datasheetUnitId=id;
+
+ let unit=
+ state.armies[side].units.find(
+   u=>u.id===id
+ );
+
+ if(!unit.datasheet || !unit.datasheet.length){
+   unit.datasheet=[{
+     model:"",
+     m:"",
+     ws:"",
+     bs:"",
+     s:"",
+     t:"",
+     w:"",
+     a:"",
+     ld:"",
+     sv:"",
+     inv:""
+   }];
+ }
+
+ datasheetTitle.innerText=
+ `${unit.name} Datasheet`;
+
+ renderDatasheetRows();
+
+ datasheetModal.style.display="flex";
+}
+
+function renderDatasheetRows(){
+
+ let unit=
+ state.armies[datasheetSide]
+ .units.find(u=>u.id===datasheetUnitId);
+
+ let html=`
+<table>
+<tr>
+<th>Model</th>
+<th>M</th>
+<th>WS</th>
+<th>BS</th>
+<th>S</th>
+<th>T</th>
+<th>W</th>
+<th>A</th>
+<th>Ld</th>
+<th>Sv</th>
+<th>Inv</th>
+</tr>
+`;
+
+ unit.datasheet.forEach(r=>{
+
+ html+=`
+<tr>
+<td><input value="${r.model||""}"></td>
+<td><input value="${r.m||""}"></td>
+<td><input value="${r.ws||""}"></td>
+<td><input value="${r.bs||""}"></td>
+<td><input value="${r.s||""}"></td>
+<td><input value="${r.t||""}"></td>
+<td><input value="${r.w||""}"></td>
+<td><input value="${r.a||""}"></td>
+<td><input value="${r.ld||""}"></td>
+<td><input value="${r.sv||""}"></td>
+<td><input value="${r.inv||""}"></td>
+</tr>
+`;
+
+ });
+
+ html+=`</table>`;
+
+ datasheetTable.innerHTML=html;
+}
+
+function addModelRow(){
+
+ let unit=
+ state.armies[datasheetSide]
+ .units.find(u=>u.id===datasheetUnitId);
+
+ unit.datasheet.push({
+   model:"",
+   m:"",
+   ws:"",
+   bs:"",
+   s:"",
+   t:"",
+   w:"",
+   a:"",
+   ld:"",
+   sv:"",
+   inv:""
+ });
+
+ renderDatasheetRows();
+}
+
+function saveDatasheet(){
+
+ let rows=
+ [...document.querySelectorAll(
+ "#datasheetTable tr"
+ )].slice(1);
+
+ let saved=[];
+
+ rows.forEach(r=>{
+
+   let inputs=[
+     ...r.querySelectorAll("input")
+   ].map(i=>i.value.trim());
+
+   let row={
+     model:inputs[0],
+     m:inputs[1],
+     ws:inputs[2],
+     bs:inputs[3],
+     s:inputs[4],
+     t:inputs[5],
+     w:inputs[6],
+     a:inputs[7],
+     ld:inputs[8],
+     sv:inputs[9],
+     inv:inputs[10]
+   };
+
+   let hasData=
+     Object.values(row)
+     .some(v=>v!== "");
+
+   if(saved.length===0 || hasData){
+     saved.push(row);
+   }
+
+ });
+
+ let unit=
+ state.armies[datasheetSide]
+ .units.find(u=>u.id===datasheetUnitId);
+
+ unit.datasheet=saved;
+
+ closeDatasheetModal();
+
+ updateUI();
+}
+
+function closeDatasheetModal(){
+ datasheetModal.style.display="none";
 }
 
 function editUnit(side, id){
@@ -744,7 +937,14 @@ function renderUnits(){
 	    ${u.name}${hasUnitNotes(u) ? ' <span style="opacity:.65;font-size:12px;">📜</span>' : ''}
 	  </span>
 	</td>
-    <td>${u.type}</td>
+	
+    <td>
+	<span onclick="openDatasheet('${side}',${u.id})"
+	style="cursor:pointer;text-decoration:underline;">
+	${u.type}${u.datasheet?.some(r=>r.model) ? " ⚔" : ""}
+	</span>
+	</td>
+	
     <td>${u.pl}</td>
     <td>${stats.survived}</td>
     <td>${stats.mfg}</td>
