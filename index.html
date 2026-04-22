@@ -98,8 +98,8 @@ button:active {transform:translateY(1px);box-shadow:inset 0 0 10px #000,0 0 6px 
 @keyframes sigilPulse {0%   { opacity: 0.08; } 50%  { opacity: 0.16; } 100% { opacity: 0.08; }}
 @media (max-width: 768px) {
   /* Stack armies vertically */
-  .container {flex-direction: column;}
-  .army {width: 100%; margin-bottom: 15px;}
+  .container {display: flex; flex-direction: column !important;}
+  .army {width: 100% !important; margin-bottom: 15px;}
   /* Make tables scroll instead of overflow */
   table {display: block; overflow-x: auto; white-space: nowrap;}
   /* Improve button tap targets */
@@ -112,6 +112,11 @@ button:active {transform:translateY(1px);box-shadow:inset 0 0 10px #000,0 0 6px 
   th, td {padding: 6px 8px; font-size: 13px;}
   /* Center button groups better */
   .center-buttons {flex-wrap: wrap; gap: 6px;}
+  #saveLoadUI {position: static; margin-bottom: 10px; justify-content: center; flex-wrap: wrap;}
+  table {font-size: 12px;}
+  th, td {padding: 6px;}
+  h1 {font-size: 22px;}
+  .army {padding: 12px;}
 	}
 </style>
 </head>
