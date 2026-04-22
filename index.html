@@ -139,15 +139,12 @@ button:active {transform:translateY(1px);box-shadow:inset 0 0 10px #000,0 0 6px 
 
 <div class="container">
 
-<h2 id="nameA">Army A</h2>
-<h2 id="nameB">Army B</h2>
-
 <!-- ARMY A -->
 <div id="armyA" class="army">
 
   <div class="army-sigil" id="sigilA"></div>
 	
-  <h2 id="nameA" style="text-align:center; cursor:pointer;" title="Rename Army | Upload Sigil" onclick="renameArmy('A')"></h2>
+  <h2 id="nameA" style="text-align:center; cursor:pointer;" title="Rename Army | Upload Sigil" onclick="renameArmy('A')">Army A</h2>
 
 <div class="center-buttons">
   <input type="color" id="colorA" title="Select banner theme" onchange="setArmyColor('A', this.value)">
@@ -194,7 +191,7 @@ button:active {transform:translateY(1px);box-shadow:inset 0 0 10px #000,0 0 6px 
 
   <div class="army-sigil" id="sigilB"></div>
 	
-  <h2 id="nameB" style="text-align:center; cursor:pointer;" title="Rename Army | Upload Sigil" onclick="renameArmy('B')"></h2>
+  <h2 id="nameB" style="text-align:center; cursor:pointer;" title="Rename Army | Upload Sigil" onclick="renameArmy('B')">Army B</h2>
 
 <div class="center-buttons">
   <input type="color" id="colorB" title="Select banner theme" onchange="setArmyColor('B', this.value)">
