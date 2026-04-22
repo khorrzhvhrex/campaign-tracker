@@ -23,8 +23,6 @@ body {text-align:center; font-family: "Rajdhani", sans-serif;}
 .army h2 {margin-bottom: var(--space-sm);}
 .army-sigil {position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); width:70%; height:70%; background-repeat:no-repeat; background-position:center; background-size:contain;
   opacity:0.08; pointer-events:none; z-index:0;}
-.army-sigil {position:absolute; inset:0; display:flex; align-items:center; justify-content:center; opacity:0.08; pointer-events:none; z-index:0;}
-.army-sigil::before {content:""; width:70%; height:70%; background-repeat:no-repeat; background-position:center; background-size:contain; display:block;}
 .bar {margin: var(--space-sm) 0;}
 .center-buttons {margin: var(--space-sm) 0;}
 table {margin-top: var(--space-sm);}
@@ -1224,7 +1222,7 @@ const colorB = state.armies.B.color || "#0000ff";
 const sigilAEl = document.getElementById("sigilA");
 const sigilBEl = document.getElementById("sigilB");
 
-sigilAEl.style.setProperty("--sigilA", `url(${state.armies.A.sigil})`);
+sigilAEl.style.backgroundImage = state.armies.A.sigil
   ? `url(${state.armies.A.sigil})`
   : "none";
 
