@@ -309,7 +309,7 @@ button:active {transform:translateY(1px);box-shadow:inset 0 0 10px #000,0 0 6px 
 </div>
 
 <!-- MISSION MODAL -->
-<div class="modal" id="modal">
+<div class="modal no-close" id="modal">
 	<div class="modal-content">
 		<h3>Mission Log</h3>
 		<input id="missionName" placeholder="Mission Name">
@@ -322,7 +322,7 @@ button:active {transform:translateY(1px);box-shadow:inset 0 0 10px #000,0 0 6px 
 </div>
 
 <!-- DELETE MISSION MODAL -->
-<div class="modal" id="deleteModal">
+<div class="modal no-close" id="deleteModal">
   <div class="modal-content" style="text-align:center;">
     <h3>Confirm Deletion</h3>
     <p>Are you sure you want to delete this battle log entry?</p>
@@ -348,7 +348,7 @@ button:active {transform:translateY(1px);box-shadow:inset 0 0 10px #000,0 0 6px 
 </div>
 
 <!-- UNIT NOTES MODAL -->
-<div class="modal" id="notesModal">
+<div class="modal no-close" id="notesModal">
   <div class="modal-content">
 
     <h3 id="notesTitle">Unit Notes</h3>
@@ -374,7 +374,7 @@ button:active {transform:translateY(1px);box-shadow:inset 0 0 10px #000,0 0 6px 
 </div>
 
 <!-- DATASHEET MODAL -->
-<div class="modal" id="datasheetModal">
+<div class="modal no-close" id="datasheetModal">
 <div class="modal-content">
 
 <h3 id="datasheetTitle">Datasheet</h3>
@@ -390,7 +390,7 @@ button:active {transform:translateY(1px);box-shadow:inset 0 0 10px #000,0 0 6px 
 </div>
 
 <!-- UNIT DELETE MODAL -->
-<div class="modal" id="deleteUnitModal">
+<div class="modal no-close" id="deleteUnitModal">
   <div class="modal-content" style="text-align:center;">
     <h3>Remove Unit</h3>
     <p>Are you sure you want to remove this unit?</p>
@@ -403,7 +403,7 @@ button:active {transform:translateY(1px);box-shadow:inset 0 0 10px #000,0 0 6px 
 </div>
 
 <!-- EXTRA MFG MODAL -->
-<div id="mfgModal" class="modal">
+<div id="mfgModal" class="modal no-close">
   <div class="modal-content">
     <h3>Eligible MFG Targets</h3>
     <div id="mfgList"></div>
@@ -452,6 +452,23 @@ document.addEventListener("change", function(e){
       if(cb !== e.target) cb.checked = false;
     });
   }
+});
+
+document.querySelectorAll(".modal").forEach(modal => {
+
+  modal.addEventListener("click", function(e){
+
+    // Only trigger if clicking the background, not content
+    if(e.target === modal){
+
+      // Skip modals marked as critical
+      if(modal.classList.contains("no-close")) return;
+
+      modal.style.display = "none";
+    }
+
+  });
+
 });
 
 function openGuideModal(){
