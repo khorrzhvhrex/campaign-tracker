@@ -96,6 +96,23 @@ button:active {transform:translateY(1px);box-shadow:inset 0 0 10px #000,0 0 6px 
 #datasheetTable input {display:block; margin:0 auto; width:100%; box-sizing:border-box; text-align:center;}
 @keyframes bronzePulse {0%   { filter: brightness(1); } 50%  { filter: brightness(1.25); } 100% { filter: brightness(1); }}
 @keyframes sigilPulse {0%   { opacity: 0.08; } 50%  { opacity: 0.16; } 100% { opacity: 0.08; }}
+@media (max-width: 768px) {
+  /* Stack armies vertically */
+  .container {flex-direction: column;}
+  .army {width: 100%; margin-bottom: 15px;}
+  /* Make tables scroll instead of overflow */
+  table {display: block; overflow-x: auto; white-space: nowrap;}
+  /* Improve button tap targets */
+  button {padding: 10px 14px; font-size: 14px;}
+  /* Color picker easier to tap */
+  input[type="color"] {width: 60px; height: 40px;}
+  /* Modal sizing fix */
+  .modal-content {width: 90%; max-height: 90vh; overflow-y: auto;}
+  /* Prevent cramped headers */
+  th, td {padding: 6px 8px; font-size: 13px;}
+  /* Center button groups better */
+  .center-buttons {flex-wrap: wrap; gap: 6px;}
+	}
 </style>
 </head>
 
