@@ -603,7 +603,10 @@ function autoGrow(el){
 function clearBattleLog(){
   if(!confirm("Clear all battle log entries?")) return;
 
-  state.battleLog = [];
+  state.missions = [];
+  state.battleHistory = [];
+  state.battleCount = 0;
+
   updateUI();
 }
 
