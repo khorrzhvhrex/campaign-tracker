@@ -606,6 +606,8 @@ function clearBattleLog(){
   state.missions = [];
   state.battleHistory = [];
   state.battleCount = 0;
+  state.armies.A.score = 0;
+  state.armies.B.score = 0;
 
   updateUI();
 }
