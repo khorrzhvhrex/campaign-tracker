@@ -258,14 +258,15 @@ button:active {transform:translateY(1px);box-shadow:inset 0 0 10px #000,0 0 6px 
 <div id="log" class="log"></div>
 
 <div id="saveLoadUI">
-  <button onclick="openClearModal()">Clear Data</button>
-	
+
   <button onclick="openGuideModal()">User Guide</button>
 	
-  <button onclick="exportJSON()">Transmit Campaign Data</button>
+  <button onclick="openClearModal()">Clear Data</button>
+	
+  <button onclick="exportJSON()">Export Campaign Data</button>
 
   <input id="fileInput" type="file" accept=".json,application/json" hidden onchange="handleImport(event)">
-  <button onclick="fileInput.click()">Receive Campaign Data</button>
+  <button onclick="fileInput.click()">Import Campaign Data</button>
 </div>
 
 <!-- CLEAR DATA MODAL -->
