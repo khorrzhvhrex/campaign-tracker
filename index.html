@@ -34,8 +34,8 @@ body {text-align:center; font-family: "Rajdhani", sans-serif;}
 .sigil-upload-btn:hover {border-color:#aaa; color:#fff;}
 .sigil-upload-btn input {display:none;}
 .bar {margin: var(--space-sm) 0;}
-.bar div {position: relative; overflow: hidden;}
-.bar div::after {content: ""; position: absolute; top: 0; left: -50%; width: 50%; height: 100%; background: linear-gradient(120deg, transparent, rgba(255,255,255,0.25), transparent);
+#barA, #barB {position: relative; overflow: hidden;}
+#barA::after, #barB::after {content: ""; position: absolute; top: 0; left: -50%; width: 50%; height: 100%; background: linear-gradient(120deg, transparent, rgba(255,255,255,0.25), transparent);
   animation: shimmerMove 2.5s infinite; pointer-events: none;}
 .center-buttons {margin: var(--space-sm) 0;}
 table {margin-top: var(--space-sm);}
