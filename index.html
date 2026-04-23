@@ -639,7 +639,6 @@ function clearAllData(){
     battleHistory: [],
     missions: [],
     campaignName: "<Campaign Name>",
-    armies: {
       armies: {
         A: { name: "<Army Name>", score: 0, units: [], color: "#ff0000", sigil: "", mfgTicks: [false,false,false] },
         B: { name: "<Army Name>", score: 0, units: [], color: "#0000ff", sigil: "", mfgTicks: [false,false,false] }
@@ -1283,31 +1282,36 @@ let activeMFGSide = null;
 let activeMFGTick = null;
 
 function openMFGTargets(side, tickIndex){
-	
-  activeMFGSide = side;
-  activeMFGTick = tickIndex;  const list = document.getElementById("mfgList");
 
-  let html = `<div style="text-align:left;">`;
-  html += `<div style="font-weight:bold; margin-bottom:8px;">${state.armies[side].name}</div>`;
+  activeMFGSide = side;
+  activeMFGTick = tickIndex;
+
+  const list = document.getElementById("mfgList");
+
+  let html = `
+    <div class="unit-grid">
+      <div class="header">Unit</div>
+      <div class="header">Select</div>
+    `;
 
   state.armies[side].units.forEach(u=>{
     const stats = getUnitStats(u.id, side);
 
     if(stats.mfg === 0){
       html += `
-        <div style="display:flex; align-items:center; gap:10px; margin:4px 0;">
+        <div class="unit-name">${u.name}</div>
+        <div>
           <input type="checkbox" data-id="${u.id}">
-          <div>${u.name}</div>
         </div>
       `;
     }
   });
 
-  if(!html.includes("input")){
-    html += `<div style="opacity:0.6;">No eligible units</div>`;
-  }
-
   html += `</div>`;
+
+  if(!html.includes("input")){
+    html = `<div style="opacity:0.6;">No eligible units</div>`;
+  }
 
   list.innerHTML = html;
   document.getElementById("mfgModal").style.display = "flex";
@@ -1455,7 +1459,7 @@ saveToLocal();
     { val: 6, el: document.getElementById(`tick${side}6`) }
   ];
 
-  thresholds.forEach(t=>{
+  thresholds.forEach(t, i=>{
     if(!t.el) return;
 	  
     const achieved = score >= t.val;
