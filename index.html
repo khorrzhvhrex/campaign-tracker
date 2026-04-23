@@ -89,11 +89,6 @@ button:active {transform:translateY(1px);box-shadow:inset 0 0 10px #000,0 0 6px 
 #saveLoadUI {position: fixed; top: 15px; right: 20px; display: flex; gap: 8px; z-index: 1000;}
 #saveLoadUI button {padding: 6px 10px; font-size: 12px;}
 #saveLoadUI {background: rgba(0,0,0,0.6); padding: 6px 10px; border-radius: 8px;}
-#mfgList {text-align: left; display: flex; flex-direction: column; align-items: flex-start;}
-#mfgList > div {display: flex; align-items: center; gap: 10px; margin: 4px 0;}
-#mfgList label {display: inline-flex; align-items: center; gap: 8px; padding: 4px 0; cursor: pointer;}
-#mfgList label:hover {background: rgba(255,255,255,0.05); border-radius: 4px; cursor: pointer;}
-#mfgList input[type="checkbox"] {margin: 0; flex-shrink: 0;}
 #notesLore, #notesRanged, #notesMelee, #notesPsychic, #notesAbilities {min-height:60px; overflow:hidden; resize:none;}
 #datasheetTable table {margin: 0 auto; table-layout: fixed;}
 #datasheetTable th, #datasheetTable td {text-align:center; vertical-align:middle; padding:4px;}
@@ -511,20 +506,19 @@ button:active {transform:translateY(1px);box-shadow:inset 0 0 10px #000,0 0 6px 
   </div>
 </div>
 
-<!-- EXTRA MFG MODAL -->
-<div id="mfgModal" class="modal no-close">
+<!-- MFG MODAL -->
+<div class="modal" id="mfgModal">
   <div class="modal-content">
-    <h3>Eligible MFG Targets</h3>
+
+    <h3>Marked for Greatness</h3>
+
     <div id="mfgList"></div>
 
-	<div style="text-align:center;margin-top:15px;">
-	  <button onclick="applyMFG()">Apply MFG</button>
-	  <button onclick="closeMFGModal()">Cancel</button>
-	</div>
-
-    <div style="text-align:center;margin-top:15px;">
-      <button onclick="closeMFGModal()">Close</button>
+    <div style="margin-top:15px; text-align:center;">
+      <button onclick="applyMFG()">Apply</button>
+      <button onclick="closeMFGModal()">Cancel</button>
     </div>
+
   </div>
 </div>
 
@@ -1288,10 +1282,14 @@ function openMFGTargets(side, tickIndex){
   const list = document.getElementById("mfgList");
 
   let html = `
-    <div style="text-align:left;">
-      <div style="font-weight:bold; margin-bottom:8px;">
-        ${state.armies[side].name}
-      </div>
+    <table style="width:100%; border-collapse:collapse;">
+      <thead>
+        <tr>
+          <th style="text-align:left;">Unit</th>
+          <th style="width:80px;">Select</th>
+        </tr>
+      </thead>
+      <tbody>
   `;
 
   state.armies[side].units.forEach(u=>{
@@ -1299,15 +1297,17 @@ function openMFGTargets(side, tickIndex){
 
     if(stats.mfg === 0){
       html += `
-        <div style="display:flex; align-items:center; gap:10px; margin:4px 0;">
-          <input type="checkbox" data-id="${u.id}">
-          <span>${u.name}</span>
-        </div>
+        <tr>
+          <td style="text-align:left;">${u.name}</td>
+          <td style="text-align:center;">
+            <input type="checkbox" data-id="${u.id}">
+          </td>
+        </tr>
       `;
     }
   });
 
-  html += `</div>`;
+  html += `</tbody></table>`;
 
   if(!html.includes("input")){
     html = `<div style="opacity:0.6;">No eligible units</div>`;
