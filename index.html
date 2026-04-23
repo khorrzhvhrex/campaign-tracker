@@ -95,6 +95,7 @@ button:active {transform:translateY(1px);box-shadow:inset 0 0 10px #000,0 0 6px 
 #datasheetTable input {display:block; margin:0 auto; width:100%; box-sizing:border-box; text-align:center;}
 @keyframes bronzePulse {0%   { filter: brightness(1); } 50%  { filter: brightness(1.25); } 100% { filter: brightness(1); }}
 @keyframes sigilPulse {0%   { opacity: 0.08; } 50%  { opacity: 0.16; } 100% { opacity: 0.08; }}
+@keyframes starPulse {0%   { transform: translate(-50%, -50%) scale(1); } 50%  { transform: translate(-50%, -50%) scale(1.25); } 100% { transform: translate(-50%, -50%) scale(1); }}
 @media (max-width: 768px) {
   /* Stack armies vertically */
   .container {display: flex; flex-direction: column !important;}
@@ -1488,7 +1489,8 @@ function updateTicks(side, score, thresholds){
       const used = state.armies[side].mfgTicks[i];
 
       if(!used){
-        t.el.style.filter = "drop-shadow(0 0 6px gold)";
+        t.el.style.filter = "drop-shadow(0 0 10px gold) drop-shadow(0 0 20px orange)";
+		t.el.style.animation = "starPulse 1.2s infinite";
         t.el.style.opacity = "1";
         t.el.style.cursor = "pointer";
 
@@ -1498,6 +1500,7 @@ function updateTicks(side, score, thresholds){
 
       } else {
         t.el.style.filter = "none";
+		t.el.style.animation = "none";
         t.el.style.opacity = "0.3";
         t.el.style.cursor = "default";
         t.el.onclick = null;
@@ -1505,6 +1508,7 @@ function updateTicks(side, score, thresholds){
 
     } else {
       t.el.style.filter = "none";
+	  t.el.style.animation = "none";
       t.el.style.opacity = "0.3";
       t.el.style.cursor = "default";
       t.el.onclick = null;
