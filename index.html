@@ -541,8 +541,8 @@ let state={
  battleCount:0,
  battleHistory:[],
 armies:{
-  A:{name:"The Dead Kings",score:0,units:[],color:"#ff0000", sigil:""},
-  B:{name:"Velithar Ot'Ulthwe",score:0,units:[],color:"#0000ff", sigil:""}
+  A:{name:"The Dead Kings",score:0,units:[],color:"#ff0000", sigil:"", mfgTicks: [false, false, false]},
+  B:{name:"Velithar Ot'Ulthwe",score:0,units:[],color:"#0000ff", sigil:"", mfgTicks: [false, false, false]}
 },
  missions:[],
  campaignName: "The Heart of the Void - First Blood",
@@ -640,8 +640,10 @@ function clearAllData(){
     missions: [],
     campaignName: "<Campaign Name>",
     armies: {
-      A: { name: "<Army Name>", score: 0, units: [], color: "#ff0000", sigil: "" },
-      B: { name: "<Army Name>", score: 0, units: [], color: "#0000ff", sigil: "" }
+      armies: {
+        A: { name: "<Army Name>", score: 0, units: [], color: "#ff0000", sigil: "", mfgTicks: [false,false,false] },
+        B: { name: "<Army Name>", score: 0, units: [], color: "#0000ff", sigil: "", mfgTicks: [false,false,false] }
+      }
     }
   };
 
@@ -1278,10 +1280,12 @@ function removeUnit(side,id){
 }
 
 let activeMFGSide = null;
+let activeMFGTick = null;
 
-function openMFGTargets(side){
+function openMFGTargets(side, tickIndex){
+	
   activeMFGSide = side;
-  const list = document.getElementById("mfgList");
+  activeMFGTick = tickIndex;  const list = document.getElementById("mfgList");
 
   let html = `<div style="text-align:left;">`;
   html += `<div style="font-weight:bold; margin-bottom:8px;">${state.armies[side].name}</div>`;
@@ -1323,6 +1327,7 @@ function applyMFG(){
 
   const unitId = Number(selected.dataset.id);
   const side = activeMFGSide;
+  state.armies[side].mfgTicks[activeMFGTick] = true;
 
   const unit = state.armies[side].units.find(u => u.id === unitId);
   if(!unit) return;
@@ -1457,16 +1462,37 @@ saveToLocal();
 
 	t.el.innerText = achieved ? "★" : "☠";
 
-	if(achieved){
-	  t.el.style.cursor = "pointer";
-	  t.el.onclick = () => openMFGTargets(side);
-	} else {
-	  t.el.style.cursor = "default";
-	  t.el.onclick = null;
-	}
-	  
-	t.el.style.fontSize = achieved ? "22px" : "18px";
+if(achieved){
+  const used = state.armies[side].mfgTicks[i];
 
+  if(!used){
+    t.el.style.cursor = "pointer";
+    t.el.onclick = () => openMFGTargets(side, i);
+  } else {
+    t.el.style.cursor = "default";
+    t.el.onclick = null;
+  }
+} else {
+  t.el.style.cursor = "default";
+  t.el.onclick = null;
+}
+	  
+t.el.style.fontSize = achieved ? "22px" : "18px";
+
+if(achieved){
+  const used = state.armies[side].mfgTicks[i];
+
+  if(!used){
+    t.el.style.filter = "drop-shadow(0 0 6px gold)";
+    t.el.style.opacity = "1";
+  } else {
+    t.el.style.filter = "none";
+    t.el.style.opacity = "0.3";
+  }
+} else {
+  t.el.style.filter = "none";
+  t.el.style.opacity = "0.3";
+}
 	// ✅ Tooltip text
 	t.el.title = achieved ? "+1 MFG" : `${t.val} HV Points`;
   });
