@@ -16,6 +16,12 @@ input[type="color"] {background:#111; border:1px solid #444; height:30px; width:
 input[type="checkbox"]:disabled {opacity: 0.4; cursor: not-allowed;}
 html, body { font-family: "Rajdhani"; background:#111; color:#eee; padding:20px; }
 body {text-align:center; font-family: "Rajdhani", sans-serif;}
+#topLeftMenu {position: fixed; top: 10px; left: 10px; z-index: 1000;}
+.dropdown {position: relative;}
+.dropdown-content {display: none; position: absolute; background: #111; min-width: 180px; border: 1px solid #444;}
+.dropdown-content a {display: block; padding: 8px; color: white; text-decoration: none;}
+.dropdown-content a:hover {background: #333;}
+.dropdown:hover .dropdown-content {display: block;}
 #campaignTitle, #nameA, #nameB, #battleLogTitle {display:inline-block;text-align:center;cursor:pointer;transition:all 0.3s ease;color:#eee;text-shadow:0 0 3px rgba(150,0,0,0.3),0 0 8px rgba(150,0,0,0.15);}
 #campaignTitle:hover, #nameA:hover, #nameB:hover, #battleLogTitle:hover {color:#fff;text-shadow:0 0 8px rgba(150,0,0,0.9),0 0 20px rgba(150,0,0,0.7),0 0 40px rgba(150,0,0,0.5),0 0 70px rgba(150,0,0,0.3),0 0 110px rgba(150,0,0,0.15);transform:scale(1.02);}
 #campaignTitle {margin-bottom: var(--space-md);}
@@ -122,6 +128,16 @@ button:active {transform:translateY(1px);box-shadow:inset 0 0 10px #000,0 0 6px 
 </head>
 
 <body>
+
+<div id="topLeftMenu">
+  <div class="dropdown">
+    <button class="dropdown-btn">40K Resources</button>
+    <div class="dropdown-content">
+      <a href="https://wahapedia.ru/" target="_blank">Wahapedia</a>
+      <a href="https://docs.google.com/" target="_blank">Crusade Cards</a>
+    </div>
+  </div>
+</div>
 
 <h1 id="campaignTitle"
     style="text-align:center; cursor:pointer;"
