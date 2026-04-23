@@ -1458,62 +1458,54 @@ renderLog();
 
 saveToLocal();
  
- function updateTicks(side){
-  const score = state.armies[side].score;
+function updateTicks(side, score, thresholds){
 
-  const thresholds = [
-    { val: 3, el: document.getElementById(`tick${side}3`) },
-    { val: 5, el: document.getElementById(`tick${side}5`) },
-    { val: 6, el: document.getElementById(`tick${side}6`) }
-  ];
+  thresholds.forEach((t, i)=>{
 
-  thresholds.forEach(t, i=>{
-    if(!t.el) return;
-	  
     const achieved = score >= t.val;
 
-	// 🔧 force reset if score dropped below threshold
-	if(!achieved){
-  	  state.armies[side].mfgTicks[i] = false;
-	}
+    // ✅ ensure mfgTicks exists
+    if(!state.armies[side].mfgTicks){
+      state.armies[side].mfgTicks = [false,false,false];
+    }
 
-	t.el.innerText = achieved ? "★" : "☠";
+    // reset if score dropped
+    if(!achieved){
+      state.armies[side].mfgTicks[i] = false;
+    }
 
-if(achieved){
-  const used = state.armies[side].mfgTicks[i];
+    // set icon
+    t.el.innerText = achieved ? "★" : "☠";
 
-  if(!used){
-    t.el.style.cursor = "pointer";
-    t.el.onclick = function(){
-  		openMFGTargets(side, i);
-	};
-  } else {
-    t.el.style.cursor = "default";
-    t.el.onclick = null;
-  }
-} else {
-  t.el.style.cursor = "default";
-  t.el.onclick = null;
-}
-	  
-t.el.style.fontSize = achieved ? "22px" : "18px";
+    // size
+    t.el.style.fontSize = achieved ? "22px" : "18px";
 
-if(achieved){
-  const used = state.armies[side].mfgTicks[i];
+    if(achieved){
+      const used = state.armies[side].mfgTicks[i];
 
-  if(!used){
-    t.el.style.filter = "drop-shadow(0 0 6px gold)";
-    t.el.style.opacity = "1";
-  } else {
-    t.el.style.filter = "none";
-    t.el.style.opacity = "0.3";
-  }
-} else {
-  t.el.style.filter = "none";
-  t.el.style.opacity = "0.3";
-}
-	// ✅ Tooltip text
-	t.el.title = achieved ? "+1 MFG" : `${t.val} HV Points`;
+      if(!used){
+        t.el.style.filter = "drop-shadow(0 0 6px gold)";
+        t.el.style.opacity = "1";
+        t.el.style.cursor = "pointer";
+
+        t.el.onclick = function(){
+          openMFGTargets(side, i);
+        };
+
+      } else {
+        t.el.style.filter = "none";
+        t.el.style.opacity = "0.3";
+        t.el.style.cursor = "default";
+        t.el.onclick = null;
+      }
+
+    } else {
+      t.el.style.filter = "none";
+      t.el.style.opacity = "0.3";
+      t.el.style.cursor = "default";
+      t.el.onclick = null;
+    }
+
   });
 }
 
