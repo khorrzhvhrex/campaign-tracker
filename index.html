@@ -1283,17 +1283,18 @@ function openMFGTargets(side){
   activeMFGSide = side;
   const list = document.getElementById("mfgList");
 
-  let html = `<strong>${state.armies[side].name}</strong>`;
+  let html = `<div style="text-align:left;">`;
+  html += `<div style="font-weight:bold; margin-bottom:8px;">${state.armies[side].name}</div>`;
 
   state.armies[side].units.forEach(u=>{
     const stats = getUnitStats(u.id, side);
 
     if(stats.mfg === 0){
       html += `
-        <label>
+        <div style="display:flex; align-items:center; gap:10px; margin:4px 0;">
           <input type="checkbox" data-id="${u.id}">
-          <span>${u.name}</span>
-        </label>
+          <div>${u.name}</div>
+        </div>
       `;
     }
   });
@@ -1302,9 +1303,12 @@ function openMFGTargets(side){
     html += `<div style="opacity:0.6;">No eligible units</div>`;
   }
 
+  html += `</div>`;
+
   list.innerHTML = html;
   document.getElementById("mfgModal").style.display = "flex";
 }
+	
 function closeMFGModal(){
   document.getElementById("mfgModal").style.display = "none";
 }
