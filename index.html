@@ -1668,25 +1668,25 @@ if(mfg.A.length > max || mfg.B.length > max){
   return;
 }
 	
-  const mission = {
+const nameVal = missionNameEl.value.trim();
+const scoreVal = missionScoreEl.value.trim();
+const narrativeVal = missionNarrativeEl.value.trim();
 
-	const nameVal = missionNameEl.value.trim();
-	const scoreVal = missionScoreEl.value.trim();
-	const narrativeVal = missionNarrativeEl.value.trim();
+// detect if any field is missing
+const incomplete = !nameVal || !scoreVal || !narrativeVal;
 
-	// detect if any field is missing
-	const incomplete = !nameVal || !scoreVal || !narrativeVal;
+// build narrative with optional reminder
+const narrativeText = narrativeVal || "Mission Debrief: UNAVAILABLE";
+const finalNarrative = incomplete
+  ? narrativeText + " — Click Edit to Submit Mission Report"
+  : narrativeText;
 
-	// build narrative with optional reminder
-	const narrativeText = narrativeVal || "Mission Debrief: UNAVILABLE";
-	const finalNarrative = incomplete
-	  ? narrativeText + " — Click Edit to Submit Mission Report"
-	  : narrativeText;
+const mission = {
 	
     id: editingMissionId || Date.now(),
     date: getFutureDate(),
-    name: missionNameEl.value || "Mission: CLASSIFIED",
-    score: missionScoreEl.value || "Terms of Victory: REDACTED",
+    name: nameVal || "MISSION: Unreported",
+	score: scoreVal || "Terms of Victory: UNREPORTED",
     narrative: finalNarrative,
     winner: pendingWinner,
     survivors,
