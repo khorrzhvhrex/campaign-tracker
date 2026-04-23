@@ -628,14 +628,16 @@ function clearAllData(){
 
   localStorage.removeItem("hotv_campaign");
 
-  // Reset state
+  // ✅ FULL reset (match initial structure)
   state = {
-    campaignName: "Heart of the Void",
-    armies:{
-      A:{name:"Army A",score:0,units:[],color:"#ff0000",sigil:""},
-      B:{name:"Army B",score:0,units:[],color:"#0000ff",sigil:""}
-    },
-    battleLog:[]
+    battleCount: 0,
+    battleHistory: [],
+    missions: [],
+    campaignName: "<Campaign Name>",
+    armies: {
+      A: { name: "<Army Name>", score: 0, units: [], color: "#ff0000", sigil: "" },
+      B: { name: "<Army Name>", score: 0, units: [], color: "#0000ff", sigil: "" }
+    }
   };
 
   updateUI();
