@@ -1281,8 +1281,12 @@ function openMFGTargets(side, tickIndex){
 
   const list = document.getElementById("mfgList");
 
-  let html = `
-    <table style="width:100%; border-collapse:collapse;">
+	let html = `
+	  <div style="font-weight:bold; margin-bottom:8px; text-align:left;">
+  	  ${state.armies[side].name}
+  	</div>
+
+  	<table style="width:100%; border-collapse:collapse;">
       <thead>
         <tr>
           <th style="text-align:left;">Unit</th>
