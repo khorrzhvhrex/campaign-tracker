@@ -1289,19 +1289,20 @@ function openMFGTargets(side, tickIndex){
   const list = document.getElementById("mfgList");
 
   let html = `
-    <div class="unit-grid">
-      <div class="header">Unit</div>
-      <div class="header">Select</div>
-    `;
+    <div style="text-align:left;">
+      <div style="font-weight:bold; margin-bottom:8px;">
+        ${state.armies[side].name}
+      </div>
+  `;
 
   state.armies[side].units.forEach(u=>{
     const stats = getUnitStats(u.id, side);
 
     if(stats.mfg === 0){
       html += `
-        <div class="unit-name">${u.name}</div>
-        <div>
+        <div style="display:flex; align-items:center; gap:10px; margin:4px 0;">
           <input type="checkbox" data-id="${u.id}">
+          <span>${u.name}</span>
         </div>
       `;
     }
@@ -1358,6 +1359,8 @@ function applyMFG(){
   state.missions.push(entry);
 
   closeMFGModal();
+
+  // force immediate refresh BEFORE anything else
   updateUI();
 }
 	
@@ -1836,6 +1839,14 @@ function loadFromLocal(){
 
   try{
     state = JSON.parse(data);
+
+    // ✅ ensure mfgTicks always exists
+    ["A","B"].forEach(side=>{
+      if(!state.armies[side].mfgTicks){
+        state.armies[side].mfgTicks = [false,false,false];
+      }
+    });
+
     updateUI();
   } catch(e){
     console.warn("Failed to load local save");
