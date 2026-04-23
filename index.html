@@ -1331,7 +1331,13 @@ function applyMFG(){
 
   const unitId = Number(selected.dataset.id);
   const side = activeMFGSide;
+	if(activeMFGTick === null || activeMFGTick === undefined){
+  alert("MFG tick error - try again");
+  return;
+}
   state.armies[side].mfgTicks[activeMFGTick] = true;
+	activeMFGTick = null;
+	activeMFGSide = null;
 
   const unit = state.armies[side].units.find(u => u.id === unitId);
   if(!unit) return;
@@ -1471,7 +1477,9 @@ if(achieved){
 
   if(!used){
     t.el.style.cursor = "pointer";
-    t.el.onclick = () => openMFGTargets(side, i);
+    t.el.onclick = function(){
+  		openMFGTargets(side, i);
+	};
   } else {
     t.el.style.cursor = "default";
     t.el.onclick = null;
