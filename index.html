@@ -34,6 +34,9 @@ body {text-align:center; font-family: "Rajdhani", sans-serif;}
 .sigil-upload-btn:hover {border-color:#aaa; color:#fff;}
 .sigil-upload-btn input {display:none;}
 .bar {margin: var(--space-sm) 0;}
+.bar div {position: relative; overflow: hidden;}
+.bar div::after {content: ""; position: absolute; top: 0; left: -50%; width: 50%; height: 100%; background: linear-gradient(120deg, transparent, rgba(255,255,255,0.25), transparent);
+  animation: shimmerMove 2.5s infinite; pointer-events: none;}
 .center-buttons {margin: var(--space-sm) 0;}
 table {margin-top: var(--space-sm);}
 #battleLogTitle {margin: var(--space-lg) 0 var(--space-sm) 0;}
@@ -102,6 +105,7 @@ button:active {transform:translateY(1px);box-shadow:inset 0 0 10px #000,0 0 6px 
 @keyframes bronzePulse {0%   { filter: brightness(1); } 50%  { filter: brightness(1.25); } 100% { filter: brightness(1); }}
 @keyframes sigilPulse {0%   { opacity: 0.08; } 50%  { opacity: 0.16; } 100% { opacity: 0.08; }}
 @keyframes starPulse {0%   { transform: translate(-50%, -50%) scale(1); } 50%  { transform: translate(-50%, -50%) scale(1.25); } 100% { transform: translate(-50%, -50%) scale(1); }}
+@keyframes shimmerMove {0% { left: -50%;} 100% { left: 150%;}}
 @media (max-width: 768px) {
   /* Stack armies vertically */
   .container {display: flex; flex-direction: column !important;}
