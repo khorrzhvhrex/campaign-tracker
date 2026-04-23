@@ -555,10 +555,12 @@ const CONFIG = {singleMFGPerUnit: true, mfgPerArmyMin: 1, mfgPerArmyMax: 1};
 
 document.addEventListener("change", function(e){
   if(e.target.closest("#mfgList") && e.target.type === "checkbox"){
-    const checkboxes = document.querySelectorAll("#mfgList input[type='checkbox']");
-    checkboxes.forEach(cb=>{
-      if(cb !== e.target) cb.checked = false;
-    });
+    const side = e.target.dataset.side;
+
+    document.querySelectorAll(`#mfgList input[data-side="${side}"]`)
+      .forEach(cb=>{
+        if(cb !== e.target) cb.checked = false;
+      });
   }
 });
 
@@ -1283,24 +1285,28 @@ function openMFGTargets(side){
   activeMFGSide = side;
   const list = document.getElementById("mfgList");
 
-  let html = "";
+  let html = `<div class="modal-columns">`;
 
-  state.armies[side].units.forEach(u=>{
-    const stats = getUnitStats(u.id, side);
+  ["A","B"].forEach(s=>{
+    html += `<div><strong>${state.armies[s].name}</strong>`;
 
-    if(stats.mfg === 0){
-      html += `
-        <label style="padding:4px 0;">
-          <input type="checkbox" data-id="${u.id}">
-          ${u.name}
-        </label>
-      `;
-    }
+    state.armies[s].units.forEach(u=>{
+      const stats = getUnitStats(u.id, s);
+
+      if(stats.mfg === 0){
+        html += `
+          <label>
+            <input type="checkbox" data-id="${u.id}" data-side="${s}">
+            <span>${u.name}</span>
+          </label>
+        `;
+      }
+    });
+
+    html += `</div>`;
   });
 
-  if(!html){
-    html = `<div style="opacity:0.6;">No eligible units</div>`;
-  }
+  html += `</div>`;
 
   list.innerHTML = html;
   document.getElementById("mfgModal").style.display = "flex";
@@ -1311,42 +1317,38 @@ function closeMFGModal(){
 }
 
 function applyMFG(){
-  const selected = document.querySelector("#mfgList input:checked");
+  const selected = document.querySelectorAll("#mfgList input:checked");
 
-  if(!selected){
+  if(selected.length === 0){
     alert("Select a unit to Mark for Greatness");
     return;
   }
 
-  const unitId = Number(selected.dataset.id);
-  const side = activeMFGSide;
+  selected.forEach(sel=>{
+    const unitId = Number(sel.dataset.id);
+    const side = sel.dataset.side;
 
-  const unit = state.armies[side].units.find(u => u.id === unitId);
-  if(!unit) return;
+    const unit = state.armies[side].units.find(u => u.id === unitId);
+    if(!unit) return;
 
-  // ✅ Create MFG-only mission entry
-  const entry = {
-    id: Date.now(),
-    date: getFutureDate(),
-    name: "Marked for Greatness",
-    score: "",
-    narrative: `${unit.name} Marked for Greatness using Heart of the Void points`,
-    winner: null,
-    survivors: { A: [], B: [] },
-    mfg: { A: [], B: [] }
-  };
+    const entry = {
+      id: Date.now() + Math.random(),
+      date: getFutureDate(),
+      name: "Marked for Greatness",
+      score: "",
+      narrative: `${unit.name} Marked for Greatness using Heart of the Void points`,
+      winner: null,
+      survivors: { A: [], B: [] },
+      mfg: { A: [], B: [] }
+    };
 
-  entry.mfg[side].push(unitId);
-
-  state.missions.push(entry);
-
-  // no battleCount increment (important)
-  // no score change
+    entry.mfg[side].push(unitId);
+    state.missions.push(entry);
+  });
 
   closeMFGModal();
   updateUI();
 }
-
 function updateUI(){
  nameA.innerText=state.armies.A.name;
  nameB.innerText=state.armies.B.name;
