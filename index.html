@@ -1461,6 +1461,23 @@ rightFill.style.animation = `bronzePulse ${pulseSpeed}s ease-in-out infinite`;
 renderUnits();
 renderLog();
 
+// ✅ Recalculate MFG tick usage from missions
+["A","B"].forEach(side=>{
+  state.armies[side].mfgTicks = [false,false,false];
+
+  state.missions.forEach(m=>{
+    if(m.name === "Marked for Greatness"){
+      if(m.mfg?.[side]?.length){
+        // mark next available tick as used
+        const index = state.armies[side].mfgTicks.findIndex(v => v === false);
+        if(index !== -1){
+          state.armies[side].mfgTicks[index] = true;
+        }
+      }
+    }
+  });
+});
+	
 saveToLocal();
  
 function updateTicks(side, score, thresholds){
