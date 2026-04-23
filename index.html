@@ -1510,8 +1510,17 @@ function updateTicks(side, score, thresholds){
 }
 
 // call for both armies
-updateTicks("A");
-updateTicks("B");
+updateTicks("A", state.armies.A.score, [
+  { val: 3, el: document.getElementById("tickA3") },
+  { val: 5, el: document.getElementById("tickA5") },
+  { val: 6, el: document.getElementById("tickA6") }
+]);
+
+updateTicks("B", state.armies.B.score, [
+  { val: 3, el: document.getElementById("tickB3") },
+  { val: 5, el: document.getElementById("tickB5") },
+  { val: 6, el: document.getElementById("tickB6") }
+]);
 }
 
 function renameArmy(side){
