@@ -18,7 +18,7 @@ html, body { font-family: "Rajdhani"; background:#111; color:#eee; padding:20px;
 body {text-align:center; font-family: "Rajdhani", sans-serif;}
 #topLeftMenu {position: fixed; top: 10px; left: 10px; z-index: 1000;}
 .dropdown {position: relative;}
-.dropdown-content {display: none; position: absolute; background: #111; min-width: 180px; border: 1px solid #444;}
+.dropdown-content {display: none; position: absolute; background: #111; min-width: 180px; border: 1px solid #444; box-shadow: 0 0 10px #cd7f32;}
 .dropdown-content a {display: block; padding: 8px; color: white; text-decoration: none;}
 .dropdown-content a:hover {background: #333;}
 .dropdown:hover .dropdown-content {display: block;}
@@ -61,7 +61,7 @@ tr:hover {background: rgba(255,255,255,0.05);}
 .log {max-height:2px; overflow-y:auto; overflow-x:hidden; border:1px solid #444; padding:5px; transition:max-height 0.25s ease, opacity 0.2s ease; opacity:0.9;}
 .log.open {max-height:500px; opacity:1;}
 .modal { position:fixed; inset:0; background:rgba(0,0,0,.8); display:none; justify-content:center; align-items:center; }
-.modal-content { background:#222; padding:20px; width:600px; max-height:80vh; overflow:auto; }
+.modal-content { background:#222; padding:20px; width:600px; max-height:80vh; overflow:auto; border: 1px solid #444; box-shadow: 0 0 12px #cd7f32, 0 0 30px rgba(205,127,50,0.4);}
 .modal-columns {display: flex; gap: 40px;}
 .modal-columns > div {text-align: left;}
 .modal-columns span {display: block; flex: 1;}
@@ -72,7 +72,6 @@ tr:hover {background: rgba(255,255,255,0.05);}
 .modal-columns strong {display: block; margin-bottom: 6px; text-align: left; color: #aaa;}
 .modal-columns > div {background: rgba(255,255,255,0.03); padding: 8px; border: 1px solid #333; border-radius: 4px;}
 .modal-columns input[type="checkbox"] {margin: 3px 0 0 0; flex-shrink: 0;}
-.modal-content {border: 1px solid #444; box-shadow: 0 0 12px rgba(0,0,0,0.9), 0 0 8px rgba(150,0,0,0.3);}
 .modal-content h4 {margin-top: 20px; border-bottom: 1px solid #333; padding-bottom: 4px;}
 #guideModal .modal-content {border:1px solid #666; box-shadow: 0 0 20px rgba(0,0,0,.9), 0 0 18px rgba(150,0,0,.35); background: linear-gradient( to bottom, #1a1a1a, #151515);}
 input, textarea { width:100%; margin-bottom:10px; }
@@ -80,8 +79,8 @@ h2:hover {color: #ccc;}
 .tick {position:absolute; top:50%; transform:translate(-50%, -50%); font-size:18px; line-height:1; color:#fff; pointer-events:auto; cursor: help;}
 .tick[title="+1 MFG"]:hover {text-shadow: 0 0 8px rgba(255,215,0,0.8);}
 button {background:linear-gradient(145deg,#1a1a1a,#0d0d0d);color:#ccc;border:1px solid #444;padding:6px 12px;font-size:13px;cursor:pointer;border-radius:4px;
- box-shadow:inset 0 0 4px #000,0 0 6px rgba(0,0,0,0.9);transition:all 0.2s ease;}
-button:hover {color:#fff;border-color:#aaa;box-shadow:inset 0 0 6px #000,0 0 8px rgba(150,0,0,0.6),0 0 18px rgba(150,0,0,0.4),0 0 30px rgba(150,0,0,0.2);}
+ box-shadow: 0 0 6px #cd7f32, 0 0 12px rgba(205,127,50,0.5); transition: box-shadow 0.2s ease;}
+button:hover {color:#fff;border-color:#aaa;box-shadow: 0 0 10px #cd7f32, 0 0 20px rgba(205,127,50,0.8);}
 button:active {transform:translateY(1px);box-shadow:inset 0 0 10px #000,0 0 6px rgba(150,0,0,0.5);}
 .unit-grid {display: grid; grid-template-columns: 1fr 80px 80px; gap: 6px; align-items: center; margin-bottom: 15px;}
 .unit-grid .header {font-weight: bold; color: #aaa; border-bottom: 1px solid #333; padding-bottom: 4px;}
@@ -710,6 +709,11 @@ function renameCampaign(){
 
   document.getElementById("renameTitle").innerText = "Rename Campaign";
   document.getElementById("renameInput").value = state.campaignName;
+
+  // apply glow to army buttons
+  document.querySelectorAll(`#army${side} button`).forEach(btn=>{
+    btn.style.boxShadow = `0 0 8px ${color}, 0 0 16px ${color}`;
+  });
 
   // ❌ HIDE SIGIL UI
   document.getElementById("sigilSection").style.display = "none";
