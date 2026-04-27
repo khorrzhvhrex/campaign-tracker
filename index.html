@@ -711,11 +711,6 @@ function renameCampaign(){
   document.getElementById("renameTitle").innerText = "Rename Campaign";
   document.getElementById("renameInput").value = state.campaignName;
 
-  // apply glow to army buttons
-  document.querySelectorAll(`#army${side} button`).forEach(btn=>{
-    btn.style.boxShadow = `0 0 8px ${color}, 0 0 16px ${color}`;
-  });
-
   // ❌ HIDE SIGIL UI
   document.getElementById("sigilSection").style.display = "none";
 
