@@ -812,7 +812,7 @@ function confirmDelete(){
   state.missions = state.missions.filter(m => m.id !== missionToDeleteId);
 
   // remove matching battle history entry
-  const index = state.battleHistory.findIndex(b => b.winner === mission.winner);
+  const index = state.battleHistory.findIndex(b => b.missionId === missionToDeleteId);
   if(index !== -1){
     state.battleHistory.splice(index, 1);
     state.battleCount--;
@@ -1832,7 +1832,7 @@ const mission = {
     state.missions.push(mission);
 
     if(pendingWinner){
-      state.battleHistory.push({ winner: pendingWinner });
+      state.battleHistory.push({winner: pendingWinner, missionId: mission.id});
       state.battleCount++;
     }
   }
