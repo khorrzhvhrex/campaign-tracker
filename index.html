@@ -686,7 +686,8 @@ function clearAllData(){
     armies: {
       A: { name: "<Army Name>", score: 0, units: [], color: "#ff0000", sigil: "", mfgTicks: [false,false,false] },
       B: { name: "<Army Name>", score: 0, units: [], color: "#0000ff", sigil: "", mfgTicks: [false,false,false] }
-    }
+    },
+	scoreTracker: {rounds: ["R1"], objectives: []}
   };
 
   updateUI();
@@ -1020,16 +1021,16 @@ function renderDatasheetRows(){
 <table>
 <tr>
 <th style="width:180px;">Model</th>
-<th style=w"width:50px;">M</th>
-<th style=w"width:50px;">WS</th>
-<th style=w"width:50px;">BS</th>
-<th style=w"width:50px;">S</th>
-<th style=w"width:50px;">T</th>
-<th style=w"width:50px;">W</th>
-<th style=w"width:50px;">A</th>
-<th style=w"width:50px;">Ld</th>
-<th style=w"width:50px;">Sv</th>
-<th style=w"width:50px;">Inv</th>
+<th style="width:50px;">M</th>
+<th style="width:50px;">WS</th>
+<th style="width:50px;">BS</th>
+<th style="width:50px;">S</th>
+<th style="width:50px;">T</th>
+<th style="width:50px;">W</th>
+<th style="width:50px;">A</th>
+<th style="width:50px;">Ld</th>
+<th style="width:50px;">Sv</th>
+<th style="width:50px;">Inv</th>
 </tr>
 `;
 
@@ -1443,8 +1444,7 @@ function openMFGTargets(side, tickIndex){
 
   html += `</tbody></table>`;
 
-  if(!html.includes("input")){
-    html = `<div style="opacity:0.6;">No eligible units</div>`;
+  if(state.armies[side].units.filter(u => getUnitStats(u.id, side).mfg === 0).length === 0){    html = `<div style="opacity:0.6;">No eligible units</div>`;
   }
 
   list.innerHTML = html;
@@ -1469,7 +1469,7 @@ function applyMFG(){
   alert("MFG tick error - try again");
   return;
 }
-  state.armies[side].mfgTicks[activeMFGTick] = true;
+	
 	activeMFGTick = null;
 	activeMFGSide = null;
 
