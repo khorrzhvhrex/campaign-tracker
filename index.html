@@ -206,6 +206,13 @@ button:active {transform:translateY(1px);box-shadow:inset 0 0 10px #000,0 0 6px 
   </div>
 </div>
 
+<div id="scoreTrackerA"></div>
+
+<div class="center-buttons">
+  <button onclick="addObjective()">Add Objective</button>
+  <button onclick="addBattleRound()">Add Battle Round</button>
+</div>
+
 <!-- ARMY B -->
 <div id="armyB" class="army">
 
@@ -252,6 +259,15 @@ button:active {transform:translateY(1px);box-shadow:inset 0 0 10px #000,0 0 6px 
     <button id="exportB" onclick="exportArmy('B')"></button>
   </div>
 </div>
+
+<div id="scoreTrackerB"></div>
+
+<div class="center-buttons">
+  <button onclick="addObjective()">Add Objective</button>
+  <button onclick="addBattleRound()">Add Battle Round</button>
+</div>
+
+<!-- BATTLE LOG -->
 
 </div>
 
@@ -563,7 +579,8 @@ armies:{
   B:{name:"<Enter Army Name>",score:0,units:[],color:"#0000ff", sigil:"", mfgTicks: [false, false, false]}
 },
  missions:[],
- campaignName: "<Enter Campaign Name>",
+  campaignName: "<Enter Campaign Name>",
+  scoreTracker: {rounds: ["R1"], objectives: []},
 };
 
 const CONFIG = {singleMFGPerUnit: true, mfgPerArmyMin: 1, mfgPerArmyMax: 1}; 
@@ -1310,6 +1327,81 @@ function removeUnit(side,id){
 let activeMFGSide = null;
 let activeMFGTick = null;
 
+function addObjective(){
+  state.scoreTracker.objectives.push({
+    name: "",
+    points: "",
+    scoredAt: "",
+    scores: {}
+  });
+
+  updateUI();
+}
+
+function addBattleRound(){
+  const rounds = state.scoreTracker.rounds;
+  const next = "R" + (rounds.length + 1);
+  rounds.push(next);
+
+  updateUI();
+}
+
+function renderScoreTracker(){
+  const { rounds, objectives } = state.scoreTracker;
+
+  function buildTable(side){
+    let html = `
+      <table>
+        <thead>
+          <tr>
+            <th>Mission Objective</th>
+            <th>Points</th>
+            <th>Scored At</th>
+            ${rounds.map(r => `<th>${r}</th>`).join("")}
+          </tr>
+        </thead>
+        <tbody>
+    `;
+
+    objectives.forEach((obj, i)=>{
+      html += `
+        <tr>
+          <td><input value="${obj.name}" onchange="updateObjective(${i}, 'name', this.value)"></td>
+          <td><input value="${obj.points}" onchange="updateObjective(${i}, 'points', this.value)"></td>
+          <td><input value="${obj.scoredAt}" onchange="updateObjective(${i}, 'scoredAt', this.value)"></td>
+
+          ${rounds.map(r => `
+            <td>
+              <input value="${obj.scores[side]?.[r] || ""}" 
+                     onchange="updateScore(${i}, '${side}', '${r}', this.value)">
+            </td>
+          `).join("")}
+        </tr>
+      `;
+    });
+
+    html += `</tbody></table>`;
+    return html;
+  }
+
+  document.getElementById("scoreTrackerA").innerHTML = buildTable("A");
+  document.getElementById("scoreTrackerB").innerHTML = buildTable("B");
+}
+
+function updateObjective(index, field, value){
+  state.scoreTracker.objectives[index][field] = value;
+  saveToLocal();
+}
+
+function updateScore(index, side, round, value){
+  if(!state.scoreTracker.objectives[index].scores[side]){
+    state.scoreTracker.objectives[index].scores[side] = {};
+  }
+
+  state.scoreTracker.objectives[index].scores[side][round] = value;
+  saveToLocal();
+}
+
 function openMFGTargets(side, tickIndex){
 
   activeMFGSide = side;
@@ -1495,6 +1587,7 @@ rightFill.style.animation = `bronzePulse ${pulseSpeed}s ease-in-out infinite`;
 
 renderUnits();
 renderLog();
+renderScoreTracker();
 
 // ✅ Recalculate MFG tick usage from missions
 ["A","B"].forEach(side=>{
