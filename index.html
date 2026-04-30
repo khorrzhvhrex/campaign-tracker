@@ -583,7 +583,7 @@ armies:{
 },
  missions:[],
   campaignName: "<Enter Campaign Name>",
-  scoreTracker: {rounds: ["R1","R2","R3","R4","R5"], objectives: []},
+  scoreTracker: {rounds: ["R1","R2","R3","R4","R5"], objectives: {A: [], B: []}},
 };
 
 const CONFIG = {singleMFGPerUnit: true, mfgPerArmyMin: 1, mfgPerArmyMax: 1}; 
@@ -1332,12 +1332,14 @@ let activeMFGSide = null;
 let activeMFGTick = null;
 
 function addObjective(){
-  state.scoreTracker.objectives.push({
+  ["A","B"].forEach(side=>{
+  state.scoreTracker.objectives[side].push({
     name: "",
     points: "",
     scoredAt: "",
     scores: {}
   });
+});
 
   updateUI();
 }
@@ -1350,8 +1352,20 @@ function addBattleRound(){
   updateUI();
 }
 
-function removeObjective(index){
-  state.scoreTracker.objectives.splice(index, 1);
+function removeObjective(index, side){
+  state.scoreTracker.objectives[side].splice(index, 1);
+
+  if(state.scoreTracker.objectives[side].length === 0){
+    state.scoreTracker.objectives[side].push({
+      name: "",
+      points: "",
+      scoredAt: "",
+      scores: {}
+    });
+  }
+
+  updateUI();
+}
 
   // ✅ always keep at least one row
   if(state.scoreTracker.objectives.length === 0){
@@ -1394,12 +1408,19 @@ function renderScoreTracker(){
     state.scoreTracker = { rounds: ["R1"], objectives: [] };
   }
 
-  const { rounds, objectives } = state.scoreTracker;
+  const { rounds } = state.scoreTracker;
 
   // ✅ ensure at least one row exists
-  if(objectives.length === 0){
-    state.scoreTracker.objectives.push({name: "", points: "", scoredAt: "", scores: {}});
+  ["A","B"].forEach(side=>{
+  if(state.scoreTracker.objectives[side].length === 0){
+    state.scoreTracker.objectives[side].push({
+      name: "",
+      points: "",
+      scoredAt: "",
+      scores: {}
+    });
   }
+});
 
   // ✅ SAFETY: ensure DOM exists before rendering
   const elA = document.getElementById("scoreTrackerA");
@@ -1427,27 +1448,29 @@ function renderScoreTracker(){
         <tbody>
     `;
 
-    objectives.forEach((obj, i)=>{
+    const objectives = state.scoreTracker.objectives[side];
+
+	objectives.forEach((obj, i)=>{
       html += `
         <tr>
 		  <td>
 		    <div style="display:flex; align-items:center; gap:4px;">
 		      <input style="flex:1;" value="${obj.name}" 
-		             onchange="updateObjective(${i}, 'name', this.value)">
-		      <button onclick="removeObjective(${i})" style="font-size:10px; height:22px; padding:0 6px;">✕</button>
+		             onchange="updateObjective(${i}, 'name', this.value), '${side}'">
+		      <button onclick="removeObjective(${i}, '${side}')" style="font-size:10px; height:22px; padding:0 6px;">✕</button>
 		    </div>
 		  </td>
 
 		  <td>
 		    <input style="width:100%; text-align:center;" 
 		           value="${obj.points}" 
-		           onchange="updateObjective(${i}, 'points', this.value)">
+		           onchange="updateObjective(${i}, 'points', this.value), '${side}'">
 		  </td>
 
 		  <td>
 		    <input style="width:100%;" 
 		           value="${obj.scoredAt}" 
-		           onchange="updateObjective(${i}, 'scoredAt', this.value)">
+		           onchange="updateObjective(${i}, 'scoredAt', this.value), '${side}'">
 		  </td>
 
 		  ${rounds.map(r => `
@@ -1469,17 +1492,17 @@ function renderScoreTracker(){
   document.getElementById("scoreTrackerB").innerHTML = buildTable("B");
 }
 
-function updateObjective(index, field, value){
-  state.scoreTracker.objectives[index][field] = value;
+function updateObjective(index, field, value, side){
+  state.scoreTracker.objectives[side][index][field] = value;
   saveToLocal();
 }
 
 function updateScore(index, side, round, value){
-  if(!state.scoreTracker.objectives[index].scores[side]){
-    state.scoreTracker.objectives[index].scores[side] = {};
+  if(!state.scoreTracker.objectives[side][index].scores[side]){
+    state.scoreTracker.objectives[side][index].scores[side] = {};
   }
 
-  state.scoreTracker.objectives[index].scores[side][round] = value;
+  state.scoreTracker.objectives[side][index].scores[side][round] = value;
   saveToLocal();
 }
 
