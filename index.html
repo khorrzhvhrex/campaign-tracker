@@ -582,7 +582,7 @@ armies:{
 },
  missions:[],
   campaignName: "<Enter Campaign Name>",
-  scoreTracker: {rounds: ["R1"], objectives: []},
+  scoreTracker: {rounds: ["R1","R2","R3","R4","R5"], objectives: []},
 };
 
 const CONFIG = {singleMFGPerUnit: true, mfgPerArmyMin: 1, mfgPerArmyMax: 1}; 
@@ -687,7 +687,7 @@ function clearAllData(){
       A: { name: "<Army Name>", score: 0, units: [], color: "#ff0000", sigil: "", mfgTicks: [false,false,false] },
       B: { name: "<Army Name>", score: 0, units: [], color: "#0000ff", sigil: "", mfgTicks: [false,false,false] }
     },
-	scoreTracker: {rounds: ["R1"], objectives: []}
+	scoreTracker: {rounds: ["R1","R2","R3","R4","R5"], objectives: []}
   };
 
   updateUI();
@@ -1357,6 +1357,11 @@ function renderScoreTracker(){
   }
 
   const { rounds, objectives } = state.scoreTracker;
+
+  // ✅ ensure at least one row exists
+  if(objectives.length === 0){
+    state.scoreTracker.objectives.push({name: "", points: "", scoredAt: "", scores: {}});
+  }
 
   // ✅ SAFETY: ensure DOM exists before rendering
   const elA = document.getElementById("scoreTrackerA");
