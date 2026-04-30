@@ -1350,7 +1350,19 @@ function addBattleRound(){
 }
 
 function renderScoreTracker(){
+
+  // ✅ SAFETY: ensure structure always exists
+  if(!state.scoreTracker){
+    state.scoreTracker = { rounds: ["R1"], objectives: [] };
+  }
+
   const { rounds, objectives } = state.scoreTracker;
+
+  // ✅ SAFETY: ensure DOM exists before rendering
+  const elA = document.getElementById("scoreTrackerA");
+  const elB = document.getElementById("scoreTrackerB");
+
+  if(!elA || !elB) return;
 
   function buildTable(side){
     let html = `
@@ -1955,6 +1967,11 @@ function handleImport(e){
       if(data.armies && data.missions){
         state = data;
 
+	  // ✅ ensure scoreTracker exists on imported files
+	  if(!state.scoreTracker){
+	 	state.scoreTracker = { rounds: ["R1"], objectives: [] };
+	  }
+
         ["A","B"].forEach(side=>{
           state.armies[side].units.forEach(u=>{
             u.survived = u.survived || 0;
@@ -2031,6 +2048,10 @@ function clearLocal(){
   localStorage.removeItem("hotv_campaign");
   location.reload();
 }
+
+window.addEventListener("DOMContentLoaded", () => {
+  updateUI();
+});
 
 loadFromLocal();
 updateUI();
