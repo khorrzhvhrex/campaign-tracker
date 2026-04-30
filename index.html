@@ -1431,10 +1431,10 @@ function renderScoreTracker(){
       html += `
         <tr>
 		  <td>
-		    <div style="display:flex; gap:4px;">
+		    <div style="display:flex; align-items:center; gap:4px;">
 		      <input style="flex:1;" value="${obj.name}" 
 		             onchange="updateObjective(${i}, 'name', this.value)">
-		      <button onclick="removeObjective(${i})" style="font-size:10px;">✕</button>
+		      <button onclick="removeObjective(${i})" style="font-size:10px; height:22px; padding:0 6px;">✕</button>
 		    </div>
 		  </td>
 
