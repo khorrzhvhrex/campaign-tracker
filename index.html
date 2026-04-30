@@ -1349,6 +1349,43 @@ function addBattleRound(){
   updateUI();
 }
 
+function removeObjective(index){
+  state.scoreTracker.objectives.splice(index, 1);
+
+  // ✅ always keep at least one row
+  if(state.scoreTracker.objectives.length === 0){
+    state.scoreTracker.objectives.push({
+      name: "",
+      points: "",
+      scoredAt: "",
+      scores: {}
+    });
+  }
+
+  updateUI();
+}
+
+function removeBattleRound(round){
+
+  const rounds = state.scoreTracker.rounds;
+
+  // ❗ prevent deleting all rounds
+  if(rounds.length <= 1) return;
+
+  // remove round from list
+  state.scoreTracker.rounds = rounds.filter(r => r !== round);
+
+  // remove round data from all objectives
+  state.scoreTracker.objectives.forEach(obj => {
+    if(obj.scores){
+      delete obj.scores.A?.[round];
+      delete obj.scores.B?.[round];
+    }
+  });
+
+  updateUI();
+}
+
 function renderScoreTracker(){
 
   // ✅ SAFETY: ensure structure always exists
@@ -1377,7 +1414,7 @@ function renderScoreTracker(){
             <th>Mission Objective</th>
             <th>Points</th>
             <th>Scored At</th>
-            ${rounds.map(r => `<th>${r}</th>`).join("")}
+            ${rounds.map(r => `<th> ${r} <span onclick="removeBattleRound('${r}')"  style="cursor:pointer; margin-left:4px; font-size:10px;">✕</span></th>`).join("")}
           </tr>
         </thead>
         <tbody>
@@ -1386,7 +1423,7 @@ function renderScoreTracker(){
     objectives.forEach((obj, i)=>{
       html += `
         <tr>
-          <td><input value="${obj.name}" onchange="updateObjective(${i}, 'name', this.value)"></td>
+          <td><input value="${obj.name}" onchange="updateObjective(${i}, 'name', this.value)"><button onclick="removeObjective(${i})" style="margin-top:4px;font-size:10px;">✕</button></td>
           <td><input value="${obj.points}" onchange="updateObjective(${i}, 'points', this.value)"></td>
           <td><input value="${obj.scoredAt}" onchange="updateObjective(${i}, 'scoredAt', this.value)"></td>
 
