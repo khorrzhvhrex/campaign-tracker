@@ -1408,13 +1408,19 @@ function renderScoreTracker(){
 
   function buildTable(side){
     let html = `
-      <table>
+      <table style="table-layout:fixed; width:100%;">
         <thead>
           <tr>
-            <th>Mission Objective</th>
-            <th>Points</th>
-            <th>Scored At</th>
-            ${rounds.map(r => `<th> ${r} <span onclick="removeBattleRound('${r}')"  style="cursor:pointer; margin-left:4px; font-size:10px;">✕</span></th>`).join("")}
+            <th style="width:40%;">Mission Objective</th>
+			<th style="width:60px;">Points</th>
+			<th style="width:120px;">Scored At</th>
+			${rounds.map(r => `
+ 			 <th style="width:60px;">
+   			 ${r}
+   			 <span onclick="removeBattleRound('${r}')" 
+       			   style="cursor:pointer; margin-left:4px; font-size:10px;">✕</span>
+		  	 </th>
+		`).join("")}
           </tr>
         </thead>
         <tbody>
@@ -1424,12 +1430,12 @@ function renderScoreTracker(){
       html += `
         <tr>
           <td><input value="${obj.name}" onchange="updateObjective(${i}, 'name', this.value)"><button onclick="removeObjective(${i})" style="margin-top:4px;font-size:10px;">✕</button></td>
-          <td><input value="${obj.points}" onchange="updateObjective(${i}, 'points', this.value)"></td>
+          <td><input style="width:100%; text-align:center;" value="${obj.points}" onchange="updateObjective(${i}, 'points', this.value)"></td>
           <td><input value="${obj.scoredAt}" onchange="updateObjective(${i}, 'scoredAt', this.value)"></td>
 
           ${rounds.map(r => `
             <td>
-              <input value="${obj.scores[side]?.[r] || ""}" 
+              <input style="width:100%; text-align:center;" value="${obj.scores[side]?.[r] || ""}" 
                      onchange="updateScore(${i}, '${side}', '${r}', this.value)">
             </td>
           `).join("")}
