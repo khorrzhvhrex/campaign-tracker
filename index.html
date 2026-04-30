@@ -1401,6 +1401,13 @@ function renderScoreTracker(){
     };
   }
 
+  // ✅ MIGRATION: fix old saved data
+  if(Array.isArray(state.scoreTracker.objectives)){
+    state.scoreTracker.objectives = {
+      A: [],
+      B: []
+    };
+  }
   const { rounds } = state.scoreTracker;
 
   // ✅ ensure at least one row exists
