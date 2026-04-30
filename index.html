@@ -688,7 +688,13 @@ function clearAllData(){
       A: { name: "<Army Name>", score: 0, units: [], color: "#ff0000", sigil: "", mfgTicks: [false,false,false] },
       B: { name: "<Army Name>", score: 0, units: [], color: "#0000ff", sigil: "", mfgTicks: [false,false,false] }
     },
-	scoreTracker: {rounds: ["R1","R2","R3","R4","R5"], objectives: []}
+	scoreTracker: {
+  rounds: ["R1","R2","R3","R4","R5"],
+  objectives: {
+    A: [],
+    B: []
+  }
+}
   };
 
   updateUI();
@@ -1367,35 +1373,19 @@ function removeObjective(index, side){
   updateUI();
 }
 
-  // ✅ always keep at least one row
-  if(state.scoreTracker.objectives.length === 0){
-    state.scoreTracker.objectives.push({
-      name: "",
-      points: "",
-      scoredAt: "",
-      scores: {}
-    });
-  }
-
-  updateUI();
-}
-
 function removeBattleRound(round){
 
   const rounds = state.scoreTracker.rounds;
-
-  // ❗ prevent deleting all rounds
   if(rounds.length <= 1) return;
 
-  // remove round from list
   state.scoreTracker.rounds = rounds.filter(r => r !== round);
 
-  // remove round data from all objectives
-  state.scoreTracker.objectives.forEach(obj => {
-    if(obj.scores){
-      delete obj.scores.A?.[round];
-      delete obj.scores.B?.[round];
-    }
+  ["A","B"].forEach(side=>{
+    state.scoreTracker.objectives[side].forEach(obj=>{
+      if(obj.scores){
+        delete obj.scores[side]?.[round];
+      }
+    });
   });
 
   updateUI();
@@ -1405,7 +1395,10 @@ function renderScoreTracker(){
 
   // ✅ SAFETY: ensure structure always exists
   if(!state.scoreTracker){
-    state.scoreTracker = { rounds: ["R1"], objectives: [] };
+    state.scoreTracker = {
+      rounds: ["R1","R2","R3","R4","R5"],
+      objectives: { A: [], B: [] }
+    };
   }
 
   const { rounds } = state.scoreTracker;
@@ -1456,7 +1449,7 @@ function renderScoreTracker(){
 		  <td>
 		    <div style="display:flex; align-items:center; gap:4px;">
 		      <input style="flex:1;" value="${obj.name}" 
-		             onchange="updateObjective(${i}, 'name', this.value), '${side}'">
+		             onchange="updateObjective(${i}, 'name', this.value, '${side}')">
 		      <button onclick="removeObjective(${i}, '${side}')" style="font-size:10px; height:22px; padding:0 6px;">✕</button>
 		    </div>
 		  </td>
@@ -1464,13 +1457,13 @@ function renderScoreTracker(){
 		  <td>
 		    <input style="width:100%; text-align:center;" 
 		           value="${obj.points}" 
-		           onchange="updateObjective(${i}, 'points', this.value), '${side}'">
+		           onchange="updateObjective(${i}, 'points', this.value, '${side}')">
 		  </td>
 
 		  <td>
 		    <input style="width:100%;" 
 		           value="${obj.scoredAt}" 
-		           onchange="updateObjective(${i}, 'scoredAt', this.value), '${side}'">
+		           onchange="updateObjective(${i}, 'scoredAt', this.value, '${side}')">
 		  </td>
 
 		  ${rounds.map(r => `
