@@ -1025,7 +1025,7 @@ function renderDatasheetRows(){
  .units.find(u=>u.id===datasheetUnitId);
 
  let html=`
-<table>
+<table style="width:100%; table-layout:fixed;">
 <tr>
 <th style="width:180px;">Model</th>
 <th style="width:50px;">M</th>
@@ -1045,7 +1045,7 @@ function renderDatasheetRows(){
 
  html+=`
 <tr>
-<td style="width:2000px;"><input style="width:100%;" value="${r.model||""}"></td>
+<td style="width:auto;"><input style="width:100%;" value="${r.model||""}"></td>
 <td><input value="${r.m||""}"></td>
 <td><input value="${r.ws||""}"></td>
 <td><input value="${r.bs||""}"></td>
